@@ -1,0 +1,14 @@
+    <!--
+    <Image Name='Settings' Path='Settings.png' Pack='true' />
+    -->
+    <customUI xmlns='http://schemas.microsoft.com/office/2006/01/customui' loadImage='LoadImage'>
+      <ribbon>
+        <tabs>
+          <tab id='tab1' label='R AddIn'>
+            <group id='group1' label='R Tools'>
+              <button id='buttonSettings' label='Settings...' image='Settings' onAction='OnButtonSettingsClicked'/>
+            </group >
+          </tab>
+        </tabs>
+      </ribbon>
+    </customUI>
