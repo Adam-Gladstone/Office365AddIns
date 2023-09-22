@@ -56,11 +56,11 @@ The _Office365 AddIns_ solution consists of two main projects. The ExcelRAddIn p
 So, what do these add-ins actually do?
 * The ExcelRAddIn allows you to execute R code and get the results back in Excel. This behaves similarly to executing R code in RStudio's Console window. The following is a snapshot after fitting a simple linear model.
 
-<img src="Images/ExcelRAddInSession.PNG" alt="ExcelRAddIn Session" width="100%" height="100%">
+<img src="Images/ExcelRAddInSession.png" alt="ExcelRAddIn Session" width="100%" height="100%">
 
 * The RScriptAddIn (for Word) allows you to write text and R code in the same document, execute the R code and use the results (if there are any) 'inline'.  The following screenshot shows creating a contour plot from a simple function.
 
-<img src="Images/RScriptAddInSession.PNG" alt="ExcelRAddIn" width="100%" height="100%">
+<img src="Images/RScriptAddInSession.png" alt="RScriptAddIn Session" width="100%" height="100%">
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
