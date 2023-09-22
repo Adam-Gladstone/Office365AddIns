@@ -175,7 +175,7 @@ Helpful resources
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [license-shield]: https://img.shields.io/github/license/Adam-Gladstone/Office365AddIns.svg?style=for-the-badge
-[license-url]: https://github.com/Adam-Gladstone/Office365AddIns/LICENSE.md
+[license-url]: https://github.com/Adam-Gladstone/Office365AddIns/blob/master/LICENSE.md
 
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/adam-gladstone-b6458b156/
