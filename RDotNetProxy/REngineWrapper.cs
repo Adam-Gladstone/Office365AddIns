@@ -368,6 +368,32 @@ namespace REngineWrapper
             };
         }
 
+        private ScriptItem GetMatrixSummary(RawMatrix m, string name, TypeInfo ti)
+        {
+            ScriptItem result = new ScriptItem
+            {
+                EvaluationType = EvaluationType.Matrix,
+                Name = name,
+                Content = $"{ti.GetSummaryType()} [{1}:{m.RowCount}, {1}:{m.ColumnCount}] "
+            };
+
+            for (int c = 0; c < Math.Min(10, m.ColumnCount); c++)
+            {
+                if (c > 0)
+                    result.Content += " ";
+
+                for (int r = 0; r < Math.Min(10, m.RowCount); r++)
+                {
+                    if (r > 0)
+                        result.Content += " ";
+
+                    result.Content += GetValue(m[r, c], ti);
+                }
+            }
+
+            return result;
+        }
+
         private ScriptItem GetMatrixSummary<MatrixType, UnderlyingType>(MatrixType m, string name, TypeInfo ti)
             where MatrixType : Matrix<UnderlyingType>
         {
@@ -1586,7 +1612,24 @@ namespace REngineWrapper
             // NOTE The call to the base ctor is specified incorrectly
             // line 111, C:\Users\adam_\AppData\Local\Temp\MetadataAsSource\2b4382f34fb14c828e29b569c0d4a54c\DecompilationMetadataAsSourceFileProvider\92e76432b2af44f6881f0596eb34e6c8\ComplexMatrix.cs
             // SymbolicExpressionType.CharacterVector  <-- should be ComplexVector
-            ComplexMatrix m = Engine.CreateComplexMatrix(matrix);
+
+            // m = MatrixSize = 2 x 2; RObjectType = CharacterVector
+            // ComplexMatrix m = Engine.CreateComplexMatrix(matrix);
+
+            // Workaround for the issue above. We need the correct type in order to unpack the matrix items
+            // into a summary string. GetSummary sees the matrix as a CharacterVector and casts the expression
+            // accordingly using .AsCharacterMatrix(). The exception is caused when accessing the matrix elements
+            // via m[r, c].
+            int rows = matrix.GetLength(0);
+            int cols = matrix.GetLength(1);
+
+            ComplexMatrix m = Engine.CreateComplexMatrix(rows, cols);
+
+            for (int c = 0; c < cols; c++) {
+                for (int r = 0; r < rows; r++) {
+                    m[r, c] = matrix[r, c];
+                }
+            }
 
             Engine.SetSymbol(name, m);
 
