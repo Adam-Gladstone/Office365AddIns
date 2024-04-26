@@ -1,106 +1,43 @@
 ﻿using ExcelDna.Integration;
+
 using RDotNetProxy;
 using REngineWrapper;
 using REnvironmentControlLibrary;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Numerics;
 
+
 namespace ExcelRAddIn
 {
-    public static class ExcelRFunctions
+    public static class Script
     {
         private static EngineWrapper engineWrapper = null;
+
+        public static EngineWrapper EngineWrapper { get => engineWrapper; set => engineWrapper = value; }
+
 
         [ExcelFunction(Name = "RScript.Evaluate",
                         Description = "Evaluate R script",
                         HelpTopic = "")]
         public static object[,] Evaluate(
             [ExcelArgument(Description = "R script")] string script,
-            [ExcelArgument(Description = "Flag to indicate whether any output is suppressed")] string suppressOutput = "False"
+            [ExcelArgument(Description = "Flag to indicate whether any output is suppressed")] bool suppressOutput = false
             )
         {
-            object[,] obj = null;
+            object[,] obj;
 
             try
             {
                 Initialize();
 
-                ScriptItem result = engineWrapper.Evaluate(script);
-                if (result != null)
-                {
-                    switch (result.EvaluationType)
-                    {
-                        case EvaluationType.Unknown:
-                        case EvaluationType.Exception:
-                            obj = Convert.ReportException(result.Content);
-                            break;
+                ScriptItem result = EngineWrapper.Evaluate(script);
 
-                        case EvaluationType.Empty:
-                            {
-                                string message = $"Empty expression from script: '{script.Substring(0, Math.Min(script.Length, 50))}'";
-                                TaskPaneManager.AddMessage(MessageType.Information, message);
+                obj = ProcessResult(result, script, suppressOutput);
 
-                                obj = Convert.ReportEmpty();
-                            }
-                            break;
-
-                        case EvaluationType.Vector:
-                        case EvaluationType.List:
-                        case EvaluationType.Function:
-                        case EvaluationType.Frame:
-                        case EvaluationType.Matrix:
-                        case EvaluationType.Language:
-                        case EvaluationType.Factor:
-                        case EvaluationType.Symbol:
-                            {
-                                TaskPaneManager.AddEnvironmentItem(result.Name, result.Content);
-
-                                obj = Convert.ReportSuccess(result.Name);
-                            }
-                            break;
-
-                        case EvaluationType.Value:
-                            {
-                                if(suppressOutput.ToLower() == "true")
-                                {
-                                    string message = $"Ignoring output from {result.Name}";
-                                    TaskPaneManager.AddMessage(MessageType.Information, message);
-
-                                    obj = Convert.ReportEmpty();
-                                }
-                                else
-                                {
-                                    obj = result.Data;
-                                }
-                            }
-                            break;
-
-                        case EvaluationType.Remove:
-                            {
-                                string[] itemsToRemove = engineWrapper.ExtractParameters(result.Name);
-
-                                long itemsRemoved = TaskPaneManager.RemoveEnvironmentItems(itemsToRemove);
-
-                                string message = $"Removed {itemsRemoved} {((itemsRemoved != 1) ? "items" : "item")} from the environment";
-                                TaskPaneManager.AddMessage(MessageType.Information, message);
-
-                                obj = Convert.ReportEmpty();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-                else
-                {
-                    TaskPaneManager.AddMessage(MessageType.Error, "Unsupported script operation.");
-                }
-
-                return obj;
             }
             catch (Exception e)
             {
@@ -112,9 +49,9 @@ namespace ExcelRAddIn
             return obj;
         }
 
-        private static void Initialize()
+        public static void Initialize()
         {
-            if (engineWrapper == null)
+            if (EngineWrapper == null)
             {
                 TaskPaneManager.AddMessage(MessageType.Information, "Initializing the R environment ...");
 
@@ -132,10 +69,150 @@ namespace ExcelRAddIn
                     throw new Exception("R_HOME and/or path to R binaries are empty. Check the settings.");
                 }
 
-                engineWrapper = new EngineWrapper(path, home, HostType.Excel);
+                EngineWrapper = new EngineWrapper(path, home, HostType.Excel);
 
                 TaskPaneManager.AddMessage(MessageType.Information, "Successfully initialized the R environment");
+
+                LoadDefaultPackages();
             }
+        }
+
+        public static object[,] ProcessResult(ScriptItem result, string script, bool suppressOutput)
+        {
+            object[,] obj = null;
+
+            if (result != null)
+            {
+                switch (result.EvaluationType)
+                {
+                    case EvaluationType.Unknown:
+                    case EvaluationType.Exception:
+                        obj = Convert.ReportException(result.Content);
+                        break;
+
+                    case EvaluationType.Empty:
+                        {
+                            string message = $"Empty expression from script: '{script.Substring(0, Math.Min(script.Length, 50))}'";
+                            TaskPaneManager.AddMessage(MessageType.Information, message);
+
+                            obj = Convert.ReportEmpty();
+                        }
+                        break;
+
+                    case EvaluationType.Vector:
+                    case EvaluationType.List:
+                    case EvaluationType.Function:
+                    case EvaluationType.Frame:
+                    case EvaluationType.Matrix:
+                    case EvaluationType.Language:
+                    case EvaluationType.Factor:
+                    case EvaluationType.Symbol:
+                        {
+                            TaskPaneManager.AddEnvironmentItem(result.Name, result.Content);
+
+                            obj = Convert.ReportSuccess(result.Name);
+                        }
+                        break;
+
+                    case EvaluationType.Value:
+                        {
+                            if (suppressOutput)
+                            {
+                                string message = $"Ignoring output from {result.Name}";
+                                TaskPaneManager.AddMessage(MessageType.Information, message);
+
+                                obj = Convert.ReportEmpty();
+                            }
+                            else
+                            {
+                                obj = result.Data;
+                            }
+                        }
+                        break;
+
+                    case EvaluationType.Remove:
+                        {
+                            string[] itemsToRemove = EngineWrapper.ExtractParameters(result.Name);
+
+                            long itemsRemoved = TaskPaneManager.RemoveEnvironmentItems(itemsToRemove);
+
+                            string message = $"Removed {itemsRemoved} {((itemsRemoved != 1) ? "items" : "item")} from the environment";
+                            TaskPaneManager.AddMessage(MessageType.Information, message);
+
+                            obj = Convert.ReportEmpty();
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                TaskPaneManager.AddMessage(MessageType.Error, "Unsupported script operation.");
+            }
+
+            return obj;
+        }
+
+        // load any 'default' packages
+        private static void LoadDefaultPackages()
+        {
+            var packages = new List<string>(ConfigurationManager.AppSettings["packages"].Split(new char[] { ';' }));
+            foreach (string package in packages)
+            {
+                string script = $"library({package})";
+                ScriptItem result = EngineWrapper.Evaluate(script);
+                if (result.EvaluationType == EvaluationType.Exception)
+                {
+                    TaskPaneManager.AddMessage(MessageType.Error, result.Content);
+                }
+                else
+                {
+                    _ = ProcessResult(result, script, true);
+                }
+            }
+        }
+
+        // 'character', 'complex', 'integer', 'logical', 'numeric'
+        private static RType DetermineType(object value, string rtype)
+        {
+            RType type = RType.none;
+
+            bool result = false;
+            // This could be user-supplied or "ExcelDna.Integration.ExcelMissing"
+            if (!string.IsNullOrEmpty(rtype))
+            {
+                result = Enum.TryParse(rtype.ToLower(), out type);
+            }
+
+            if(!result)
+            {
+                Type systemType = value.GetType();
+
+                if (systemType == typeof(double))
+                {
+                    type = RType.numeric;
+                }
+                else if (systemType == typeof(bool))
+                {
+                    type = RType.logical;
+                }
+                else if (systemType == typeof(int))
+                {
+                    type = RType.integer;
+                }
+                else if (systemType == typeof(Complex))
+                {
+                    type = RType.complex;
+                }
+                else if (systemType == typeof(string))
+                {
+                    type = RType.character;
+                }
+            }
+
+            return type;
         }
 
         [ExcelFunction(Name = "RScript.CreateVector",
@@ -154,8 +231,7 @@ namespace ExcelRAddIn
             {
                 Initialize();
 
-                RType rtype = RType.none;
-                Enum.TryParse(type.ToLower(), out rtype);
+                RType rtype = DetermineType(values[0], type);
 
                 switch (rtype)
                 {
@@ -163,35 +239,35 @@ namespace ExcelRAddIn
                         {
                             string[] result = Array.ConvertAll(values, x => x.ToString());
 
-                            item = engineWrapper.CreateCharacterVector(name, result);
+                            item = EngineWrapper.CreateCharacterVector(name, result);
                         }
                         break;
                     case RType.complex:
                         {
                             Complex[] result = Array.ConvertAll(values, x => Convert.ComplexParse(x.ToString()));
 
-                            item = engineWrapper.CreateComplexVector(name, result);
+                            item = EngineWrapper.CreateComplexVector(name, result);
                         }
                         break;
                     case RType.integer:
                         {
                             int[] result = Array.ConvertAll(values, x => System.Convert.ToInt32(x));
 
-                            item = engineWrapper.CreateIntegerVector(name, result);
+                            item = EngineWrapper.CreateIntegerVector(name, result);
                         }
                         break;
                     case RType.logical:
                         {
                             bool[] result = Array.ConvertAll(values, x => System.Convert.ToBoolean(x));
 
-                            item = engineWrapper.CreateLogicalVector(name, result);
+                            item = EngineWrapper.CreateLogicalVector(name, result);
                         }
                         break;
                     case RType.numeric:
                         {
                             double[] result = Array.ConvertAll(values, x => System.Convert.ToDouble(x));
 
-                            item = engineWrapper.CreateNumericVector(name, result);
+                            item = EngineWrapper.CreateNumericVector(name, result);
                         }
                         break;
                     default:
@@ -228,8 +304,7 @@ namespace ExcelRAddIn
             {
                 Initialize();
 
-                RType rtype = RType.none;
-                Enum.TryParse(type.ToLower(), out rtype);
+                RType rtype = DetermineType(values[0, 0], type);
 
                 switch (rtype)
                 {
@@ -237,35 +312,35 @@ namespace ExcelRAddIn
                         {
                             string[,] result = Convert.ConvertAll(values, x => x.ToString());
 
-                            item = engineWrapper.CreateCharacterMatrix(name, result);
+                            item = EngineWrapper.CreateCharacterMatrix(name, result);
                         }
                         break;
                     case RType.complex:
                         {
                             Complex[,] result = Convert.ConvertAll(values, x => Convert.ComplexParse(x.ToString()));
 
-                            item = engineWrapper.CreateComplexMatrix(name, result);
+                            item = EngineWrapper.CreateComplexMatrix(name, result);
                         }
                         break;
                     case RType.integer:
                         {
                             int[,] result = Convert.ConvertAll(values, x => System.Convert.ToInt32(x));
 
-                            item = engineWrapper.CreateIntegerMatrix(name, result);
+                            item = EngineWrapper.CreateIntegerMatrix(name, result);
                         }
                         break;
                     case RType.logical:
                         {
                             bool[,] result = Convert.ConvertAll(values, x => System.Convert.ToBoolean(x));
 
-                            item = engineWrapper.CreateLogicalMatrix(name, result);
+                            item = EngineWrapper.CreateLogicalMatrix(name, result);
                         }
                         break;
                     case RType.numeric:
                         {
                             double[,] result = Convert.ConvertAll(values, x => System.Convert.ToDouble(x));
 
-                            item = engineWrapper.CreateNumericMatrix(name, result);
+                            item = EngineWrapper.CreateNumericMatrix(name, result);
                         }
                         break;
                     default:
@@ -304,14 +379,20 @@ namespace ExcelRAddIn
                 Initialize();
 
                 string[] columnNames = Array.ConvertAll(headers, x => x.ToString());
-                string[] columnTypes = Array.ConvertAll(types, x => x.ToString());
+                string[] columnTypes = null;
+
+                if (types[0].ToString() != "ExcelDna.Integration.ExcelMissing")
+                    columnTypes = Array.ConvertAll(types, x => x.ToString());
 
                 int rows = values.GetLength(0);
                 int cols = values.GetLength(1);
 
-                if (!(cols == columnNames.Length && cols == columnTypes.Length && columnNames.Length == columnTypes.Length))
+                if(columnTypes != null)
                 {
-                    throw new Exception($"The number of column names ({columnNames.Length}), column types ({columnTypes.Length}) and columns ({cols}) must be the same.");
+                    if (!(cols == columnNames.Length && cols == columnTypes.Length && columnNames.Length == columnTypes.Length))
+                    {
+                        throw new Exception($"The number of column names ({columnNames.Length}), column types ({columnTypes.Length}) and columns ({cols}) must be the same.");
+                    }
                 }
 
                 IEnumerable[] columns = new IEnumerable[cols];
@@ -320,9 +401,9 @@ namespace ExcelRAddIn
                 {
                     object[] arr = Utility.SliceColumn(values, c).ToArray();
 
-                    string type = columnTypes[c];
-                    RType rtype = RType.none;
-                    Enum.TryParse(type.ToLower(), out rtype);
+                    string type = columnTypes != null ? columnTypes[c] : string.Empty;
+
+                    RType rtype = DetermineType(arr[0], type);
 
                     switch (rtype)
                     {
@@ -346,7 +427,7 @@ namespace ExcelRAddIn
                     }
                 }
 
-                item = engineWrapper.CreateDataFrame(name, columns, columnNames);
+                item = EngineWrapper.CreateDataFrame(name, columns, columnNames);
 
                 TaskPaneManager.AddEnvironmentItem(item.Name, item.Content);
 
@@ -361,5 +442,127 @@ namespace ExcelRAddIn
 
             return obj;
         }
+
+        [ExcelFunction(Name = "RScript.Params",
+                        Description = "Display a list of parameters for a function",
+                        HelpTopic = "")]
+        public static object[,] Params(
+            [ExcelArgument(Description = "Function name")] string functionName,
+            [ExcelArgument(Description = "Flag to indicate whether to return types")] bool showTypes = false,
+            [ExcelArgument(Description = "Flag to indicate whether to return default values")] bool showDefaults = false
+            )
+        {
+            object[,] obj;
+
+            try
+            {
+                Initialize();
+
+                string parameterList = "params";
+                string script = $"{parameterList} = as.list(formals({FunctionName(functionName)}))";
+
+                ScriptItem result = EngineWrapper.Evaluate(script);
+
+                if(result.EvaluationType == EvaluationType.Exception)
+                {
+                    obj = ProcessResult(result, script, false);
+                }
+                else
+                {
+                    result = EngineWrapper.Evaluate($"{parameterList}");
+
+                    object[,] parameters = ProcessResult(result, script, false);
+
+                    int rows = parameters.GetLength(0);
+                    int columns = 1;
+                    columns += (showTypes) ? 1 : 0;
+                    columns += (showDefaults) ? 1 : 0;
+                    int typesColumn = 1;
+                    int defaultsColumn = (showTypes) ? 2 : 1;
+
+                    obj = new object[rows, columns];
+
+                    for (int row = 0; row < rows; row++)
+                    {
+                        string parameterName = parameters[row, 0].ToString();
+                        obj[row, 0] = parameterName;
+
+                        if (showTypes)
+                        {
+                            ScriptItem si = EngineWrapper.Evaluate($"typeof({parameterList}${parameterName})");
+                            obj[row, typesColumn] = si.Data[0, 0];
+                        }
+
+                        if (showDefaults)
+                        {
+                            ScriptItem si = EngineWrapper.Evaluate($"{parameterList}${parameterName}");
+                            obj[row, defaultsColumn] = (si.Data == null || si.EvaluationType == EvaluationType.Empty) ? "<missing>" : si.Data[0, 0];
+                        }
+                    }
+                }
+
+                EngineWrapper.Evaluate($"rm({parameterList})");
+            }
+            catch (Exception e)
+            {
+                TaskPaneManager.AddMessage(MessageType.Error, e.Message);
+
+                obj = Convert.ReportException(e);
+            }
+
+            return obj;
+        }
+
+        //
+        // Generic function evaluation
+        //
+        [ExcelFunction(Name = "RScript.Function",
+                        Description = "Evaluate the supplied function with the parameters.",
+                        HelpTopic = "")]
+        public static object[,] Function(
+            [ExcelArgument(Description = "The return value")] string returnValue,
+            [ExcelArgument(Description = "A unique name for this model")] string functionName,
+            [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams
+            )
+        {
+            return EvaluateFunction(returnValue, functionName, objectParams);
+        }
+
+        // Generic function to evaluate the named function using the parameters
+        private static object[,] EvaluateFunction(string returnValue, string functionName, object[,] objectParams)
+        {
+            object[,] results;
+
+            try
+            {
+                Initialize();
+
+                Dictionary<string, object> parameters = Convert.GetParameters(objectParams);
+
+                string parameterList = Convert.ToParameterList(parameters);
+
+                string script = $"{Model.ModelName(returnValue)} = {FunctionName(functionName)}({parameterList})";
+
+                ScriptItem result = EngineWrapper.Evaluate(script);
+
+                results = ProcessResult(result, script, false);
+            }
+            catch (Exception e)
+            {
+                results = Convert.ReportException(e);
+            }
+
+            return results;
+        }
+
+        private static string FunctionName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException("The function name is empty.");
+            }
+            return name;
+        }
+
     }
 }

@@ -12,10 +12,10 @@ namespace RScriptAddIn
 {
     public partial class ThisAddIn
     {
-        private REnvironmentControl m_environmentControl;
+        private REnvironmentControlHost m_environmentControl;
         private Microsoft.Office.Tools.CustomTaskPane taskPaneValue;
 
-        public REnvironmentControl REnvironmentControl
+        public REnvironmentControlHost REnvironmentControl
         {
             get
             {
@@ -33,7 +33,7 @@ namespace RScriptAddIn
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            m_environmentControl = new REnvironmentControl();
+            m_environmentControl = new REnvironmentControlHost();
             taskPaneValue = this.CustomTaskPanes.Add(m_environmentControl, "R-Script AddIn");
             taskPaneValue.Visible = true;
             taskPaneValue.VisibleChanged += new EventHandler(TaskPaneValue_VisibleChanged);
