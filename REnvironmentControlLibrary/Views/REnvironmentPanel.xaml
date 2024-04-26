@@ -1,0 +1,79 @@
+﻿<UserControl
+    x:Class="REnvironmentControlLibrary.REnvironmentPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:REnvironmentControlLibrary"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:REnvironmentControlLibrary.Models"
+    xmlns:vm="clr-namespace:REnvironmentControlLibrary.ViewModel"
+    d:DesignHeight="450"
+    mc:Ignorable="d">
+
+    <Control.Resources>
+
+        <!--  Template for the list view message items  -->
+        <DataTemplate x:Key="MessageTemplate">
+            <StackPanel Orientation="Horizontal">
+                <Image
+                    Width="16"
+                    Height="16"
+                    Margin="0,0,5,0"
+                    Source="{Binding MessageIcon}" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding Message}" />
+            </StackPanel>
+        </DataTemplate>
+
+    </Control.Resources>
+
+    <Grid>
+        <!--  Grid consisting of 1 column and 3 rows (includes splitter control)  -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!--  Environment list view  -->
+        <ListView x:Name="lvEnvironment" ItemsSource="{Binding EnvironmentItems}">
+
+            <ListView.View>
+
+                <GridView>
+                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Name}">
+                        <GridViewColumnHeader Content="Name" />
+                    </GridViewColumn>
+
+                    <GridViewColumn Width="200" DisplayMemberBinding="{Binding Contents}">
+                        <GridViewColumnHeader Content="Contents" />
+                    </GridViewColumn>
+                </GridView>
+
+            </ListView.View>
+
+        </ListView>
+
+        <!--  Horizontal Splitter  -->
+        <GridSplitter
+            Grid.Row="1"
+            Grid.Column="0"
+            Height="5"
+            HorizontalAlignment="Stretch" />
+
+        <!--  Message list view  -->
+        <ListView
+            x:Name="lvMessages"
+            Grid.Row="2"
+            Grid.Column="0"
+            Background="Black"
+            Foreground="Lime"
+            ItemTemplate="{StaticResource MessageTemplate}"
+            ItemsSource="{Binding Messages}" />
+
+    </Grid>
+
+</UserControl>

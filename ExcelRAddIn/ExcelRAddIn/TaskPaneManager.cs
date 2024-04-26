@@ -14,7 +14,7 @@ namespace ExcelRAddIn
             if (m_taskPane == null)
             {
                 // Make a new one using ExcelDna.Integration.CustomUI.CustomTaskPaneFactory 
-                m_taskPane = CustomTaskPaneFactory.CreateCustomTaskPane(typeof(REnvironmentControl), "Excel R AddIn");
+                m_taskPane = CustomTaskPaneFactory.CreateCustomTaskPane(typeof(REnvironmentControlHost), "Excel R AddIn");
 
                 m_taskPane.Visible = true;
                 m_taskPane.DockPosition = MsoCTPDockPosition.msoCTPDockPositionRight;
@@ -45,17 +45,17 @@ namespace ExcelRAddIn
 
         public static void AddMessage(MessageType type, string message)
         {
-            ((REnvironmentControl)m_taskPane.ContentControl).AddMessage(type, message);
+            ((REnvironmentControlHost)m_taskPane.ContentControl).AddMessage(type, message);
         }
 
         public static void AddEnvironmentItem(string name, string contents)
         {
-            ((REnvironmentControl)m_taskPane.ContentControl).AddEnvironmentItem(name, contents);
+            ((REnvironmentControlHost)m_taskPane.ContentControl).AddEnvironmentItem(name, contents);
         }
 
         public static long RemoveEnvironmentItems(string[] names)
         {
-            return ((REnvironmentControl)m_taskPane.ContentControl).RemoveEnvironmentItems(names);
+            return ((REnvironmentControlHost)m_taskPane.ContentControl).RemoveEnvironmentItems(names);
         }
     }
 }

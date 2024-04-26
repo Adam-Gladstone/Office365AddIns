@@ -42,6 +42,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+	<li><a href="#latest">Latest Updates</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -128,6 +129,63 @@ At this point the projects can be run under the debugger in the usual way. More 
 <!-- USAGE EXAMPLES -->
 ## Usage
 Both the ExcelRAddIn and the RScriptAddIn projects have /Tests subdirectories. These contain a number of usage examples.
+
+
+## Latest Updates (26/04/2024)
+
+### Ease of use features.
+- Users can specify packages to load when the add-in is initialised in the Add-In settings available from the R AddIn menu.
+
+<img src="Images/REnvironmentSettings.png" alt="R Environment Settings" width="50%" height="50%">
+
+Default package loading takes place on the first call to `RScript.Evaluate(...)`.
+
+- Updates to `CreateVector`, `CreateMatrix`, `CreateDataFrame`. The final parameter ('Type' => character, complex, integer, logical, numeric) is now optional; the RType is now determined from the data if possible. This makes it somewhat easier to create objects to pass to R from Excel. 
+- Two generic calls have been added: `RScript.Params` and `RScript.Function`. `RScript.Params` returns a list of parameters for the requested function and `RScript.Function` evaluates the specified function, possibly using the parameter dictionary retrieved from the call to `RScript.Params`.
+
+<img src="Images/RScriptParams.png" alt="Retrieve parameters and types from a function" width="75%" height="75%">
+
+- Additional functions for querying models (objects returned from calls to 'lm', 'glm' etc): 
+	`Model.Results` outputs a list of results from the model. 
+	`Model.Result` outputs the result obtained from one item of the list of model results. Optionally, the result can be formatted as a data frame. This is somewhat more convenient than having to evaluate scripts of the form `'model name'$coeffcients`, etc.
+	`Model.Accuracy` returns a number of statistics relating to measures of model accuracy.
+
+### Wrapper functions.
+One of the motivations for updating the __ExcelRAddIn__ was to provide an improved experience when using more complex R functions in an Excel worksheet. The idea was to avoid building up a script by providing wrapper functions that can handle the variety of parameters passed to the underlying R functions. The option of using a script is always available. However, for a complex function like `auto.arima` (which can take up to 35 parameters) or `glm`, it is easier to setup a parameter dictionary with the appropriately named parameters and their values (as shown below)
+
+<img src="Images/LogisticRegressionParams.png" alt="Logistic Regression Parameters" width="75%" height="75%"> 
+
+rather than creating a script, for example: `logModel = glm(Purchase~Income+Age+ZipCode, data = purchase, family = binomial(link='logit'))`
+
+The parameters and their default values can be retrieved by using the `RScript.Params` function.
+
+Wrapper functions have been provided for a number of the functions in the forecast library (https://cran.r-project.org/web/packages/forecast/forecast.pdf). 
+These are as follows:
+* Forecast.MA			- Moving average smoothing
+* Forecast.SES		- Simple exponential smoothing
+* Forecast.Holt		- Holt exponential smoothing
+* Forecast.HW			- Holt-Winters exponential smoothing.
+* Forecast.AutoETS	- Exponential smoothing state space model.
+* Forecast.Arima		- Auto-Regressive Integrated Moving Average model
+* Forecast.AutoArima	- Fit best ARIMA model to univariate time series
+* Forecast.FC			- Generic function for forecasting from time series or time series models
+* Forecast.meanf		- Mean forecast
+* Forecast.rwf		- Forecasts and prediction intervals for a random walk with drift model
+* Forecast.splinef	- Local linear forecasts and prediction intervals using cubic smoothing splines
+* Forecast.thetaf		- Forecasts and prediction intervals for a theta method forecast
+* Forecast.Croston	- Forecasts and other information for Croston’s forecasts
+
+In addition to the wrappers around the forecast package, wrappers have been provided around the following two 'workhorse' functions:
+* Regression.LM		- Fit a linear model to the data
+* Regression.GLM		- Fit a generalised linear model to the data
+
+The Forecast.xlsx spreadsheet provides examples of these based on the underlying packages.
+
+### UI updates
+- The R Environment AddIn panel has been updated to use WPF (in place of Windows Forms). This allows greater flexibility (at least in theory) for future enhancements.
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 ## Roadmap

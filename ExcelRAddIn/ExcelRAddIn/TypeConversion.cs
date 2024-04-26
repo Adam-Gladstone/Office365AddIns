@@ -1,6 +1,9 @@
 ﻿using REngineWrapper;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
+using System.Text;
 
 namespace ExcelRAddIn
 {
@@ -139,6 +142,97 @@ namespace ExcelRAddIn
                 }
             }
             return output;
+        }
+
+        public static Dictionary<string, object> GetParameters(object[,] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            for (long row = 0; row < array.GetLongLength(0); row++)
+            {
+                string key = array[row, 0].ToString();
+                if (key == "ExcelDna.Integration.ExcelMissing")
+                    continue;
+
+                if (!string.IsNullOrEmpty(key))
+                {
+                    object value = array[row, 1];
+                    if(value is null || value is ExcelDna.Integration.ExcelEmpty)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        parameters[key] = value;
+                    }
+                }
+            }
+
+            return parameters;
+        }
+
+        public static string ToParameterList(Dictionary<string, object> parameters)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            string[] keys = parameters.Keys.ToArray();
+            int count = 0;
+
+            foreach (string key in keys)
+            {
+                if (count > 0 && count < keys.Length)
+                {
+                    sb.Append(',');
+                }
+
+                object value = parameters[key];
+
+                Type systemType = value.GetType();
+
+                if (systemType == typeof(double) || systemType == typeof(int))
+                {
+                    sb.Append($"{key} = {value}");
+                }
+                else if (systemType == typeof(bool))
+                {
+                    sb.Append($"{key} = {(System.Convert.ToBoolean(value) == true ? "TRUE" : "FALSE")}");
+                }
+                else if (systemType == typeof(Complex))
+                {
+                    sb.Append($"{key} = {value}");
+                }
+                else if (systemType == typeof(string))
+                {
+                    string s = (string)value;
+                    s.Trim();
+
+                    if ((s.Substring(0, 2) == "c("))
+                    {
+                        sb.Append($"{key} = {s}");
+                    }
+                    else if ((s.Substring(0, 1) == "^"))
+                    {
+                        sb.Append($"{key} = {s.Substring(1, s.Length - 1)}");
+                    }
+                    else
+                    {
+                        sb.Append($"{key} = \'{value}\'");
+                    }
+                }
+                else
+                {
+                    throw new Exception($"Unrecognised type ({systemType}) for the value corresponding to the key: {key}");
+                }
+
+                ++count;
+            }
+
+            return sb.ToString();
         }
     }
 }

@@ -589,7 +589,8 @@ namespace REngineWrapper
                     }
                     else if (ti.Type == "symbol")
                     {
-                        result = GetContentsAsObject(expression.AsSymbol(), name);
+                        result = GetVectorContentsAsObject<CharacterVector, string>(expression.AsCharacter(), name, ti);
+                        //result = GetContentsAsObject(expression.AsSymbol(), name);
                     }
                     else
                     {
@@ -800,7 +801,7 @@ namespace REngineWrapper
             if (expression != null && expression.Type != RDotNet.Internals.SymbolicExpressionType.Null)
             {
                 ScriptItem item = GetContentsAsObject(expression, name);
-                result.Data[0, 0] = item != null ? item.Data[0, 0] : "<empty>";
+                result.Data[0, 0] = item != null ? (string.IsNullOrEmpty(item.Data[0, 0].ToString()) ? "<missing>": item.Data[0, 0]) : "<empty>";
             }
 
             return result;

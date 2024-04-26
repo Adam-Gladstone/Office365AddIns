@@ -6,6 +6,7 @@ using RScriptAddIn.Properties;
 using REngineWrapper;
 using REnvironmentControlLibrary;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace RScriptAddIn
 {
@@ -16,6 +17,25 @@ namespace RScriptAddIn
         private void ToolRibbon_Load(object sender, RibbonUIEventArgs e)
         {
             this.ToggleButtonShow.Label = (ToggleButtonShow.Checked) ? "Hide Task Pane" : "Show Task Pane";
+        }
+
+        // load any 'default' packages
+        private void LoadDefaultPackages()
+        {
+            var packages = new List<string>(Settings.Default.packages.Split(new char[] { ';' }));
+            foreach (string package in packages)
+            {
+                string script = $"library({package})";
+                ScriptItem result = engineWrapper.Evaluate(script);
+                if (result.EvaluationType == EvaluationType.Exception)
+                {
+                    AddMessage(MessageType.Error, result.Content);
+                }
+                else
+                {
+                    AddMessage(MessageType.Information, $"Sucessfully loaded the package: {package} and dependencies");
+                }
+            }
         }
 
         private void ButtonRunScript_Click(object sender, RibbonControlEventArgs e)
@@ -43,6 +63,8 @@ namespace RScriptAddIn
                     engineWrapper = new EngineWrapper(path, home, HostType.Word);
 
                     AddMessage(MessageType.Information, "Successfully initialized the R environment");
+
+                    LoadDefaultPackages();
                 }
 
                 //https://learn.microsoft.com/en-us/visualstudio/vsto/word-object-model-overview?view=vs-2022&tabs=csharp
@@ -177,14 +199,16 @@ namespace RScriptAddIn
         {
             string home = Settings.Default.R_HOME;
             string path = Settings.Default.R_PATH;
+            string packages = Settings.Default.packages;
 
-            FormEnvironmentSettings settings = new FormEnvironmentSettings(home, path);
+            FormEnvironmentSettings settings = new FormEnvironmentSettings(home, path, packages);
 
             DialogResult result = settings.ShowDialog();
             if (result == DialogResult.OK)
             {
                 Settings.Default.R_HOME = settings.Home;
                 Settings.Default.R_PATH = settings.Path;
+                Settings.Default.packages = settings.Packages;
 
                 Settings.Default.Save();
             }

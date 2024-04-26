@@ -42,14 +42,16 @@ namespace ExcelRAddIn
 
             string home = settings["R_HOME"].Value;
             string path = settings["R_PATH"].Value;
+            string packages = settings["packages"].Value;
 
-            FormEnvironmentSettings environmentSettings = new FormEnvironmentSettings(home, path);
+            FormEnvironmentSettings environmentSettings = new FormEnvironmentSettings(home, path, packages);
 
             DialogResult result = environmentSettings.ShowDialog();
             if (result == DialogResult.OK)
             {
                 settings["R_HOME"].Value = environmentSettings.Home;
                 settings["R_PATH"].Value = environmentSettings.Path;
+                settings["packages"].Value = environmentSettings.Packages;
 
                 configFile.Save(ConfigurationSaveMode.Modified);
                 ConfigurationManager.RefreshSection(configFile.AppSettings.SectionInformation.Name);
