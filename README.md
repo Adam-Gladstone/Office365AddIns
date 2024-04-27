@@ -14,11 +14,11 @@
 
   <p align="center">
     <br />
-    <a href="https://github.com/Adam-Gladstone/Office365AddIns"><strong>Explore the docs �</strong></a>
+    <a href="https://github.com/Adam-Gladstone/Office365AddIns"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/Adam-Gladstone/Office365AddIns/issues">Report Bug</a>
-    �
+    ·
     <a href="https://github.com/Adam-Gladstone/Office365AddIns/issues">Request Feature</a>
   </p>
 </div>
@@ -42,7 +42,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-	<li><a href="#latest">Latest Updates</a></li>
+	  <li><a href="#latest-updates">Latest Updates</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -130,8 +130,10 @@ At this point the projects can be run under the debugger in the usual way. More 
 ## Usage
 Both the ExcelRAddIn and the RScriptAddIn projects have /Tests subdirectories. These contain a number of usage examples.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Latest Updates (26/04/2024)
+<!-- Latest Updates -->
+## Latest Updates
 
 ### Ease of use features.
 - Users can specify packages to load when the add-in is initialised in the Add-In settings available from the R AddIn menu.
