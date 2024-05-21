@@ -25,6 +25,9 @@ namespace RScriptAddIn
             var packages = new List<string>(Settings.Default.packages.Split(new char[] { ';' }));
             foreach (string package in packages)
             {
+                if (string.IsNullOrEmpty(package))
+                    continue;
+
                 string script = $"library({package})";
                 ScriptItem result = engineWrapper.Evaluate(script);
                 if (result.EvaluationType == EvaluationType.Exception)

@@ -161,6 +161,9 @@ namespace ExcelRAddIn
             var packages = new List<string>(ConfigurationManager.AppSettings["packages"].Split(new char[] { ';' }));
             foreach (string package in packages)
             {
+                if(string.IsNullOrEmpty(package)) 
+                    continue;
+
                 string script = $"library({package})";
                 ScriptItem result = EngineWrapper.Evaluate(script);
                 if (result.EvaluationType == EvaluationType.Exception)
