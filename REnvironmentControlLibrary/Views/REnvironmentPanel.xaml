@@ -71,8 +71,23 @@
             Grid.Column="0"
             Background="Black"
             Foreground="Lime"
-            ItemTemplate="{StaticResource MessageTemplate}"
-            ItemsSource="{Binding Messages}" />
+            IsHitTestVisible="False"
+            ItemsSource="{Binding Messages}">
+            
+            <ListView.View>
+
+                <GridView>
+
+                    <GridViewColumn
+                        Width="300"
+                        CellTemplate="{StaticResource MessageTemplate}"
+                        Header="Messages" />
+
+                </GridView>
+
+            </ListView.View>
+
+        </ListView>
 
     </Grid>
 
