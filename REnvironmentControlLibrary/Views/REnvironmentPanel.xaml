@@ -71,8 +71,9 @@
             Grid.Column="0"
             Background="Black"
             Foreground="Lime"
+            IsHitTestVisible="False"
             ItemsSource="{Binding Messages}">
-
+            
             <ListView.View>
 
                 <GridView>
