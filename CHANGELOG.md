@@ -88,4 +88,13 @@ NOTE: the settings dialog box still requires a windows form. This is not a WPF p
 ## 25/04/2024
 - Updated the REnvironmentPanel (a WPF user control) to properly use binding for both the messages list and the environment list. Refactored the code to incorporate a proper MVVM organisation.
 
+## 27/07/2024
+- Updated the REnvironmentPanel Messages list view to include a header.
+
+## 31/07/2024
+- Added 'Create Plot' helper function to produce ggplot script for visualisations.
+
+Wishlist for ggplot:
+- add Aesthetic structure and add to property grid (used by all geoms)
+- consider how to handle multiple 'geoms' ?
 

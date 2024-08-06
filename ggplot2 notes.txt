@@ -1,0 +1,212 @@
+ggplot2 notes
+-------------
+Reference: https://ggplot2-book.org/getting-started
+
+
+Data*: the information you want to visualise
+Mapping*: the description of how the data’s variables are mapped to aesthetic attributes.
+	Layers*: A layer is a collection of geometric elements and statistical transformations
+		geoms
+		stats
+	Scales: Scales map values in the data space to values in the aesthetic space
+	Coordinates: A coord describes how data coordinates are mapped to the plane of the graphic
+	Facets: A facet specifies how to break up and display subsets of data as small multiples
+	Theme: A theme controls the finer points of display, like the font size and background colour
+
+
+The three key components of every plot: data, aesthetics and geoms
+
+* Almost every plot maps a variable to x and y, so naming these aesthetics is tedious, so the first two unnamed arguments to aes() will be mapped to x and y.
+* colour, shape and size => when passed as top-level aes, the colour, shape and size are mapped from factors AND added to the legend; if passed without aes(...) directly to geom, then the mapping is applied as above but does not appear in the legend. Some care required when passing columns into geoms OUTSIDE of an aes(...)
+ie. this works: geom_point(aes(colour = class))
+but this doesn't: geom_point(colour = class)
+NOTE: This is saying something different: the first is saying map different classes (2seater, compact, suv...) to different colours; the second is saying draw the points in the colour - which in this case is not a colour.
+
+* Another technique for displaying additional categorical variables on a plot is faceting (instead of trying to display a single graph with all classes of vehicles for example). Faceting creates tables of graphics by splitting the data into subsets and displaying the same graph for each subset. 
+
+
+
+select 'geom': point, smooth, boxplot, line etc
+- each of these has a (small) property grid with the param-value mapping
+e.g.
+  method = 'loess', 'gam'( generalised additive model ), 'lm',
+  formula = y ~ x,
+  se = TRUE/false,
+  orientation = ,
+  show.legend = ,
+  span (?? seems to be part of stat_smooth)
+  
+NOTE: Bar charts can be confusing because there are two rather different plots that are both commonly called bar charts. The above form expects you to have unsummarised data, and each observation contributes one unit to the height of each bar. The other form of bar chart is used for presummarised data. For example, you might have three drugs with their average effect:
+
+drugs <- data.frame(
+  drug = c("a", "b", "c"),
+  effect = c(4.2, 9.7, 6.1)
+)
+
+To display this sort of data, you need to tell geom_bar() to not run the default stat which bins and counts the data. However, we think it’s even better to use geom_point() because points take up less space than bars, and don’t require that the y axis includes 0.
+
+* xlab() and ylab() modify the x- and y-axis labels
+* xlim() and ylim() modify the limits of axes
+
+Bookmark: https://ggplot2-book.org/toolbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=============================================================================================================
+Additional Information
+
+Plot functionality
+
+Loading Libraries:
+	ggplot2 is used for creating the plot.
+	dplyr is used for data manipulation (though in this simple example, it's not strictly necessary).
+Converting Time Series Data:
+	The AirPassengers dataset is a time series object. We convert it into a data frame with two columns: Year and Passengers.
+Creating the Line Chart:
+	We use ggplot() to initiate the plot and specify the data and aesthetic mappings.
+	geom_line() adds the line to the plot, with the color set to blue.
+	labs() adds labels and a title to the plot.
+	theme_minimal() provides a clean and minimal theme for the plot.
+
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Convert AirPassengers time series to a data frame
+data <- data.frame(
+  Year = time(AirPassengers),
+  Passengers = as.numeric(AirPassengers)
+)
+
+# Create the line chart using ggplot2
+ggplot(data, aes(x = Year, y = Passengers)) +
+  geom_line(color = "blue") +
+  labs(
+    title = "Monthly Airline Passenger Numbers (1949-1960)",
+    x = "Year",
+    y = "Number of Passengers"
+  ) +
+  theme_minimal()
+
+
+DataFrame:
+Aesthetic (group)
+
+	X Data:
+	Y Data:
+	Colour (border) = "#00abff" or "red", 
+	Fill (interior colour), 
+	Group, 
+	Shape, 
+	Size
+
+$"aes(x = {xData}, y = {yData} colour = {} ...)";
+=> $"ggplot({dataFrame}, {aesData})";
+
+ 
+Chart types
+geom_point()
+geom_line(), 
+geom_bar(), 
+geom_col(), 
+geom_boxplot(), 
+geom_dotplot(), 
+geom_density()
+
+Theme 
+
+theme_grey()
+theme_gray()
+theme_bw()
+theme_linedraw()
+theme_light()
+theme_dark()
+theme_minimal()
+theme_classic()
+theme_void()
+theme_test()
+
+theme_gray()
+The signature ggplot2 theme with a grey background and white gridlines, designed to put the data forward yet make comparisons easy.
+
+theme_bw()
+The classic dark-on-light ggplot2 theme. May work better for presentations displayed with a projector.
+
+theme_linedraw()
+A theme with only black lines of various widths on white backgrounds, reminiscent of a line drawing. Serves a purpose similar to theme_bw(). Note that this theme has some very thin lines (<< 1 pt) which some journals may refuse.
+
+theme_light()
+A theme similar to theme_linedraw() but with light grey lines and axes, to direct more attention towards the data.
+
+theme_dark()
+The dark cousin of theme_light(), with similar line sizes but a dark background. Useful to make thin coloured lines pop out.
+
+theme_minimal()
+A minimalistic theme with no background annotations.
+
+theme_classic()
+A classic-looking theme, with x and y axis lines and no gridlines.
+
+theme_void()
+A completely empty theme.
+
+theme_test()
+A theme for visual unit tests. It should ideally never change except for new features.
+
++
+theme_base(), 
+theme_calc(), 
+theme_clean(), 
+theme_econimist(), 
+theme_excel(), 
+theme_excel_new(), 
+theme_few(), 
+theme_fivethirtyeight(), 
+theme_foundation(), 
+theme_gdocs(), 
+theme_hc(), 
+theme_igray(), 
+theme_pander(), 
+theme_par(), 
+theme_solarized(), 
+theme_solid(), 
+theme_stata()
+
+labels (group)
+	Title
+	Subtitle
+	X
+	Y
+	Caption
+

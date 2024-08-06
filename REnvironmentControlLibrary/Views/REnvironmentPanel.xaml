@@ -14,7 +14,8 @@
 
         <!--  Template for the list view message items  -->
         <DataTemplate x:Key="MessageTemplate">
-            <StackPanel Orientation="Horizontal">
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                 <Image
                     Width="16"
                     Height="16"
@@ -22,6 +23,7 @@
                     Source="{Binding MessageIcon}" />
                 <TextBlock VerticalAlignment="Center" Text="{Binding Message}" />
             </StackPanel>
+
         </DataTemplate>
 
     </Control.Resources>
@@ -69,11 +71,8 @@
             x:Name="lvMessages"
             Grid.Row="2"
             Grid.Column="0"
-            Background="Black"
-            Foreground="Lime"
-            IsHitTestVisible="False"
             ItemsSource="{Binding Messages}">
-            
+
             <ListView.View>
 
                 <GridView>

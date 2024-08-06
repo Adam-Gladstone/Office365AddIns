@@ -51,13 +51,32 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormCreatePlot.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormCreatePlot.Designer.cs">
+      <DependentUpon>FormCreatePlot.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormEnvironmentSettings.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormEnvironmentSettings.Designer.cs">
       <DependentUpon>FormEnvironmentSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormPlotSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPlotSettings.Designer.cs">
+      <DependentUpon>FormPlotSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Environment.cs" />
+    <Compile Include="Models\GeomSettings.cs" />
+    <Compile Include="Models\Params.cs" />
+    <Compile Include="Models\Plot.cs" />
+    <Compile Include="Models\DataSettings.cs" />
+    <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\LabelSettings.cs" />
+    <Compile Include="Models\ThemeSettings.cs" />
     <Compile Include="REnvironmentControlHost.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -67,6 +86,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\DelegateCommand.cs" />
     <Compile Include="Utils\PropertyChangedBase.cs" />
+    <Compile Include="ViewModel\PlotViewModel.cs" />
     <Compile Include="Views\REnvironmentPanel.xaml.cs">
       <DependentUpon>REnvironmentPanel.xaml</DependentUpon>
     </Compile>
@@ -74,8 +94,14 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FormCreatePlot.resx">
+      <DependentUpon>FormCreatePlot.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormEnvironmentSettings.resx">
       <DependentUpon>FormEnvironmentSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPlotSettings.resx">
+      <DependentUpon>FormPlotSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="REnvironmentControlHost.resx">
       <DependentUpon>REnvironmentControlHost.cs</DependentUpon>
