@@ -49,6 +49,8 @@ namespace ExcelRAddIn
             Microsoft.Office.Interop.Excel.Application xlApp = (Microsoft.Office.Interop.Excel.Application)ExcelDnaUtil.Application;
 
             Range current = xlApp.ActiveCell;
+            if (current == null)
+                return;
 
             FormPlotSettings formPlotSettings = new FormPlotSettings();
 

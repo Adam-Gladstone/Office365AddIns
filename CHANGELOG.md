@@ -93,8 +93,97 @@ NOTE: the settings dialog box still requires a windows form. This is not a WPF p
 
 ## 31/07/2024
 - Added 'Create Plot' helper function to produce ggplot script for visualisations.
-
-Wishlist for ggplot:
-- add Aesthetic structure and add to property grid (used by all geoms)
 - consider how to handle multiple 'geoms' ?
+
+## 17/08/2024
+- added AestheticSettings property class and added it to data property grid
+
+## 19/08/2024
+- Added support for FormAestheticSettings as a separate property grid.
+- Added support for multiple geoms
+
+## 20/08/2024
+- added support for bool to (unquoted) TRUE/FALSE values
+- corrected issue with adding sub-item text in geoms list view
+- check class hierarchy
+
+Class hierarchy
+(abstract) Settings
+	- concatenate settings from List<string>: generic service
+	- GetSettings() override
+
+ThemeSttings : Settings
+LabelSettings : Settings
+DataSettings : Settings
+
+BasicSettings : Settings
+
+	AestheticSettings : BasicSettings
+
+	GeomSettings : BasicSettings
+		- generic 'GetSettings()' override that returns 'geom_'+name, so we can always add 'geom_boxplot()' etc.
+
+		GeomLineSettings : GeomSettings
+		GeomPointSettings : GeomSettings
+		GeomSmoothSettings : GeomSettings
+...
+
+- added support for: 
+	geom_abline
+	geom_hline : yintercept
+	geom_vline : xintercept
+- added support for boxplot: 
+	notch = T/F, varwidth = T/F, outliers = T/F
+	How to handle outlier specification? (outlier colour/fill/shape/size/stroke/alpha)
+- added support for dotplot
+
+Testing
+- Created a new workbook: GGPlot Tests.xlsx. Add a separate worksheet for each geom type.
+
+Datasets: AirPassengers, diamonds, mpg, mtcars
+
+## 21/08/2024
+- check how 'stat_' functions work: not currently supported by this script generator.
+- added to aes: xmin, xmax, ymin, ymax, xend, yend. https://ggplot2.tidyverse.org/reference/aes_position.html
+- added support for coords
+- added support for scales
+	https://ggplot2.tidyverse.org/reference/scale_continuous.html
+	NOTE: scales requires being able to add scale_x_continuous and scale_y_continuous: currently you can only add one.
+- added support for some themes attributes
+
+
+## 22/08/2024
+- added support for Facets
+
+
+## 23/08/2024
+
+
+
+
+
+TO DO
+- additional testing
+- add support for more geoms: ...
+- add up/down control to the list of geoms ==> in progress
+- consider adding two 'coords' panels?
+- Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
+
+
+- Reconsider the class hierarchy: the 'basic' settings and the 'aes' can be used together
+	e.g. geom_vline(xintercept = 10, fill = 'lightblue')
+	     geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
+
+
+snippets: add propggp:
+        [Category(""), ReadOnly(false), DisplayName("$Name$"), Display(Order = 0), Description("")]
+        public string $Name$ { get { return m_$name$.Value; } set { m_$name$.Value = value; } }
+
+
+
+
+
+
+
+
 

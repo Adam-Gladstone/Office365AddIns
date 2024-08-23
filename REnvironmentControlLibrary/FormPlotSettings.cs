@@ -1,5 +1,7 @@
-﻿using REnvironmentControlLibrary.ViewModel;
+﻿using REnvironmentControlLibrary.Models.GeomSettings;
+using REnvironmentControlLibrary.ViewModel;
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace REnvironmentControlLibrary
@@ -12,14 +14,47 @@ namespace REnvironmentControlLibrary
         {
             InitializeComponent();
 
+            // Data
             propertyGridData.SelectedObject = PlotViewModel.DataSettings;
+            if (propertyGridData.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridData.PropertySort = PropertySort.Categorized;
+            }
 
+            // Geoms are handled separately
+
+            // Labels
             propertyGridLabels.SelectedObject = PlotViewModel.LabelSettings;
+            if (propertyGridLabels.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridLabels.PropertySort = PropertySort.Categorized;
+            }
 
-            // Populate any controls and bind property grids
+            // Scales and Coords and Themes are not bound to a property grid until comboBox changes
+            if (propertyGridScales.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridScales.PropertySort = PropertySort.Categorized;
+            }
+
+            if (propertyGridCoords.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridCoords.PropertySort = PropertySort.Categorized;
+            }
+
+            if (propertyGridThemes.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridThemes.PropertySort = PropertySort.Categorized;
+            }
+
+            // Facets
+            propertyGridFacets.SelectedObject = PlotViewModel.FacetSettings;
+            if (propertyGridFacets.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridFacets.PropertySort = PropertySort.Categorized;
+            }
+
             UpdateData(false);
 
-            // Initial state of Ok and Cancel buttons
             OnUpdateUI();
         }
 
@@ -31,12 +66,18 @@ namespace REnvironmentControlLibrary
             }
             else
             {
-                // Geoms
-                ComboBox comboBoxGeoms = (ComboBox)tabPageLayers1.Controls["comboBoxGeom"];
+                ComboBox comboBoxGeoms = (ComboBox)tabPageLayers.Controls["comboBoxGeom"];
                 comboBoxGeoms.Items.AddRange(PlotViewModel.GeomTypes.ToArray());
                 comboBoxGeoms.SelectedIndex = 0;
 
-                // Themes
+                ComboBox comboBoxScales = (ComboBox)tabPageScales.Controls["comboBoxScales"];
+                comboBoxScales.Items.AddRange(PlotViewModel.Scales.ToArray());
+                comboBoxScales.SelectedIndex = 0;
+
+                ComboBox comboBoxCoords = (ComboBox)tabPageCoords.Controls["comboBoxCoords"];
+                comboBoxCoords.Items.AddRange(PlotViewModel.Coords.ToArray());
+                comboBoxCoords.SelectedIndex = 0;
+
                 ComboBox comboBoxThemes = (ComboBox)tabPageTheme.Controls["comboBoxThemes"];
                 comboBoxThemes.Items.AddRange(PlotViewModel.Themes.ToArray());
                 comboBoxThemes.SelectedIndex = 0;
@@ -57,18 +98,10 @@ namespace REnvironmentControlLibrary
 
         void OnUpdateUI()
         {
+            buttonUp.Enabled = false;
+            buttonDown.Enabled = false;
+
             buttonOk.Enabled = true;
-        }
-
-        private void comboBoxGeom_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ComboBox comboBoxGeoms = (ComboBox)sender;
-            if (comboBoxGeoms != null)
-            {
-                string geom = comboBoxGeoms.SelectedItem.ToString();
-
-                propertyGridGeoms.SelectedObject = PlotViewModel.GetGeom(geom);
-            }
         }
 
         private void comboBoxThemes_SelectedIndexChanged(object sender, EventArgs e)
@@ -78,7 +111,133 @@ namespace REnvironmentControlLibrary
             {
                 string theme = comboBoxThemes.SelectedItem.ToString();
 
-                PlotViewModel.SetTheme(theme);
+                if(!string.IsNullOrEmpty(theme))
+                {
+                    PlotViewModel.SetTheme(theme);
+                    propertyGridThemes.SelectedObject = PlotViewModel.ThemeSettings;
+                }
+                else
+                {
+                    propertyGridThemes.SelectedObject = null;
+                }
+            }
+        }
+
+        private void comboBoxScales_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBoxScales = (ComboBox)sender;
+            if (comboBoxScales != null)
+            {
+                string scale = comboBoxScales.SelectedItem.ToString();
+
+                if(!string.IsNullOrEmpty(scale))
+                {
+                    PlotViewModel.SetScale(scale);
+
+                    propertyGridScales.SelectedObject = PlotViewModel.ScaleSettings;
+                }
+                else
+                {
+                    propertyGridScales.SelectedObject = null;
+                }
+            }
+        }
+
+        private void comboBoxCoords_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBoxCoords = (ComboBox)sender;
+            if (comboBoxCoords != null)
+            {
+                string coords = comboBoxCoords.SelectedItem.ToString();
+
+                if(!string.IsNullOrEmpty(coords))
+                {
+                    PlotViewModel.SetCoords(coords);
+
+                    propertyGridCoords.SelectedObject = PlotViewModel.CoordSettings;
+                }
+                else
+                {
+                    propertyGridCoords.SelectedObject = null;
+                }
+            }
+        }
+
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            ComboBox comboBoxGeoms = (ComboBox)tabPageLayers.Controls["comboBoxGeom"];
+            string geom = comboBoxGeoms.SelectedItem.ToString();
+            if (!string.IsNullOrEmpty(geom))
+            {
+                Tuple<string, GeomSettings> item = PlotViewModel.AddGeom(geom);
+
+                string _geom = item.Item1;
+                GeomSettings geomSettings = item.Item2;
+
+                string content = geomSettings.GetSettings();
+
+                ListViewItem lvi = listViewGeoms.Items.Add(geom);
+                lvi.SubItems.Add(content);
+            }
+        }
+
+        private void buttonDelete_Click(object sender, EventArgs e)
+        {
+            if (listViewGeoms.SelectedItems != null && listViewGeoms.SelectedItems.Count > 0) 
+            {
+                ListViewItem lvi = listViewGeoms.SelectedItems[0];
+
+                int index = lvi.Index;
+
+                PlotViewModel.DeleteGeom(index);
+                
+                listViewGeoms.Items.Remove(lvi);
+            }
+        }
+
+        private void listViewGeoms_DoubleClick(object sender, EventArgs e)
+        {
+            if (listViewGeoms.SelectedItems != null && listViewGeoms.SelectedItems.Count > 0)
+            {
+                ListViewItem lvi = listViewGeoms.SelectedItems[0];
+
+                int index = lvi.Index;
+                string geom = lvi.Text;
+                Debug.WriteLine($"Selected geom [{index}]:\t{geom}.");
+
+                FormGeomSettings formGeomSettings = new FormGeomSettings();
+                Tuple<string, GeomSettings> item = PlotViewModel.GetGeom(index, geom);
+
+                string _geom = item.Item1;
+                GeomSettings geomSettings = item.Item2;
+
+                formGeomSettings.SetPropertyGrid(geomSettings);
+
+                DialogResult res = formGeomSettings.ShowDialog();
+                if (res == DialogResult.OK) 
+                {
+                    string content = geomSettings.GetSettings();
+
+                    lvi.SubItems[1].Text = content;
+                }
+            }
+        }
+
+        private void buttonUp_Click(object sender, EventArgs e)
+        {
+            // not implemented
+        }
+
+        private void buttonDown_Click(object sender, EventArgs e)
+        {
+            // not implemented
+        }
+
+        private void listViewGeoms_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listViewGeoms.SelectedItems != null && listViewGeoms.SelectedItems.Count > 0)
+            {
+                OnUpdateUI();
             }
         }
     }

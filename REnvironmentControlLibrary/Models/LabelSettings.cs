@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace REnvironmentControlLibrary.Models
 {
@@ -13,9 +14,9 @@ namespace REnvironmentControlLibrary.Models
 
         public LabelSettings() { }
 
-        public override string GetSettings()
+        protected virtual List<string> BuildSettingsList()
         {
-            List<string> settings = new List<string>()
+            List<string> settingsList = new List<string>()
             {
                 m_title.GetParamValue(true),
                 m_subtitle.GetParamValue(true),
@@ -24,7 +25,14 @@ namespace REnvironmentControlLibrary.Models
                 m_caption.GetParamValue(true)
             };
 
-            string content = GetSettings(settings);
+            return settingsList;
+        }
+
+        public override string GetSettings()
+        {
+            List<string> settingsList = BuildSettingsList();
+
+            string content = GetSettings(settingsList);
 
             string labels = string.Empty;
             if(!string.IsNullOrEmpty(content))
@@ -37,6 +45,8 @@ namespace REnvironmentControlLibrary.Models
         [
         Category("Labels"),
         ReadOnly(false),
+        DisplayName("Title"), 
+        Display(Order = 0),
         Description("A title for the plot.")
         ]
         public string Title
@@ -48,6 +58,8 @@ namespace REnvironmentControlLibrary.Models
         [
         Category("Labels"),
         ReadOnly(false),
+        DisplayName("Subtitle"),
+        Display(Order = 1),
         Description("A subtitle for the plot.")
         ]
         public string Subtitle
@@ -59,6 +71,8 @@ namespace REnvironmentControlLibrary.Models
         [
         Category("Labels"),
         ReadOnly(false),
+        DisplayName("X Label"),
+        Display(Order = 2),
         Description("Label for the x-axis.")
         ]
         public string X
@@ -70,6 +84,8 @@ namespace REnvironmentControlLibrary.Models
         [
         Category("Labels"),
         ReadOnly(false),
+        DisplayName("Y Label"),
+        Display(Order = 3),
         Description("Label for the y-axis.")
         ]
         public string Y
@@ -81,6 +97,8 @@ namespace REnvironmentControlLibrary.Models
         [
         Category("Labels"),
         ReadOnly(false),
+        DisplayName("Caption"),
+        Display(Order = 4),
         Description("A caption for the plot.")
         ]
         public string Caption
