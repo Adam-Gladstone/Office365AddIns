@@ -35,6 +35,33 @@ How do we know when to place them outside versus inside?
 - Aesthetics for a specific variable of your data go inside aes().
 - An aesthetic that will remain a constant value – irrespective of the values of your data – should be placed outside of aes() and within the geom element.
 
+"Note that using aes() inside the ggplot() layer specifies aesthetics globally, meaning they pass down to all subsequent geom layers in the plot. Specifying aesthetics in aes() within a geom means you are only specifying the aesthetics for that specific layer only. "
+
+"Consider the code chunk below:
+
+library(ggplot2)
+
+df <- data.frame(
+  x = c(1, 2), y = c(2, 1)
+)
+
+ggplot(df, aes(x, y + 1)) +
+  geom_point(colour = "green") +
+  geom_line(aes(colour = "blue"))
+Here, the aes(x, y + 1) means aes(x = x, y = y + 1) which sets the x and y aesthetics that some layers understand to the x and y columns of the dataframe. This is because aes() has three arguments, x, y and .... By not declaring x = x for example, the first variable x is matched to the x parameter through the position in the function call. Other parameters than x or y must be named, for example aes(size = 10) and get passed trough ... to become part of the mapping (which are name-expression pairs).
+
+Because the expression y = y + 1 is evaluated using 'non standard evaluation' in aes(), the scoping rules change and the variable y will first be attempted to be evaluated in the context of the data columns and not in the global environment, and hence we can 'calculate' the +1 on the dataframe columns.
+
+It's not the aes() function that determines what are valid argument = value mappings, it is the layers that accept or reject parameters. You can find the parameters a layer accepts in the documentation of the layer, for example in ?geom_point, you see that it understands x, y, alpha, colour, fill, group, shape, size and stroke. You should be able to find these back if you call your_geom_layer$geom$aesthetics(). Extension packages can define their own layers with their own aesthetics, such as the area in the {treemap} package.
+
+Additionally, because we've defined aes(x, y + 1) in the main ggplot() call, it will applied to every geometry or stat layer in that plot, in this case the points and the line. Hence, we do not need to repeat the same mapping in every layer but it is inherited unless you set inherit.aes = FALSE in a layer.
+
+In the point layer we've defined colour = "green" outside the aes() function, so it will be interpreted literally (and follows standard evaluation with the usual scoping rules). People also call this a 'static' mapping, and you can only use this in layers and not globally. In contrast, because we've defined aes(colour = "blue") in the line layer, the "blue" will be interpreted as a categorical variable that participates in a colour scale that has it's own palette (a 'dynamic' mapping). If you execute the code, you'll see that the line is not blue, but a salmon-ish colour with a legend that maps the categorical value "blue" to a discrete scale with a 1-colour palette. Because "blue" is not a column in the dataframe, nor a variable in the global environment, it will be interpreted as a length 1 vector that will be recycled to fit the number of rows in the dataframe.
+
+In general, if you want to map something to a scale (including position scales such as x and y), you put it inside aes(). If you want to have a literal interpretation, you put it outside aes() at the relevant layer."
+
+
+
 https://ggplot2.tidyverse.org/reference/layer_stats.html
 
 Facet wraps are a useful way to view individual CATEGORIES in their own graph.
@@ -73,3 +100,32 @@ Geoms
 []	text	Textual annotations
 []	tile	Tile plot as densely as possible, assuming that every tile is the same size
 [OK]	vline	Line, vertical
+
+Aesthetics
+https://ggplot2.tidyverse.org/reference/aes_position.html
+Details
+x and y define the locations of points or of positions along a line or path.
+
+x, y and xend, yend define the starting and ending points of segment and curve geometries.
+
+xmin, xmax, ymin and ymax can be used to specify the position of annotations and to represent rectangular areas.
+
+In addition, there are position aesthetics that are contextual to the geometry that they're used in. These are xintercept, yintercept, xmin_final, ymin_final, xmax_final, ymax_final, xlower, lower, xmiddle, middle, xupper, upper, x0 and y0.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
