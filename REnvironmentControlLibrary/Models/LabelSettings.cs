@@ -1,9 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class LabelSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is LabelSettings)
+            {
+                LabelSettings component = (LabelSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(LabelSettingsConverter))
+    ]
     public class LabelSettings : Settings
     {
         private Param<string> m_title = new Param<string>("title", false);
@@ -40,6 +59,12 @@ namespace REnvironmentControlLibrary.Models
                 labels = $"\tlabs({content})";
             }
             return labels;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

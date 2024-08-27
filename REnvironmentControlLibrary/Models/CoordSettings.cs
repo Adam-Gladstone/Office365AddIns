@@ -1,10 +1,30 @@
 ﻿using REnvironmentControlLibrary.TypeConverters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class CoordSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is CoordSettings)
+            {
+                CoordSettings component = (CoordSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(CoordSettingsConverter))
+    ]
+
     public class CoordSettings : Settings
     {
         private Param<string> m_xlim = new Param<string>("xlim");
@@ -42,6 +62,12 @@ namespace REnvironmentControlLibrary.Models
             }
 
             return coord;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

@@ -1,9 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class FacetWrapSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is FacetWrapSettings)
+            {
+                FacetWrapSettings component = (FacetWrapSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(FacetWrapSettingsConverter))
+    ]
     public class FacetWrapSettings : Settings
     {
         private Param<string> m_facets = new Param<string>("facets", false);
@@ -43,6 +62,12 @@ namespace REnvironmentControlLibrary.Models
             }
 
             return facet;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

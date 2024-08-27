@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace REnvironmentControlLibrary.Models.GeomSettings
 {
-    public class GeomHlineSettings : GeomLineSettings
+    public class GeomHlineSettings : GeomSettings
     {
         private Param<string> m_yintercept = new Param<string>("yintercept", false);
+
+        private AestheticSettings m_aesthetic = new AestheticSettings();
 
         public GeomHlineSettings(string name) : base(name) { }
 
@@ -15,6 +17,8 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             List<string> settingsList = base.BuildSettingsList();
 
             settingsList.Add(m_yintercept.GetParamValue());
+
+            settingsList.Add(m_aesthetic.GetSettings());
 
             return settingsList;
         }
@@ -31,7 +35,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_hline"),
+        Category("Hline"),
         ReadOnly(false),
         DisplayName("Y Intercept"),
         Display(Order = 12),
@@ -41,6 +45,19 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_yintercept.Value; }
             set { m_yintercept.Value = value; }
+        }
+
+        [
+        Category("Hline"),
+        ReadOnly(false),
+        Description("Aesthetic Settings"),
+        DisplayName("Aesthetic Settings"),
+        Display(Order = 11),
+        TypeConverter(typeof(AestheticConverter))]
+        public AestheticSettings AestheticSettings
+        {
+            get { return m_aesthetic; }
+            set { m_aesthetic = value; }
         }
     }
 }

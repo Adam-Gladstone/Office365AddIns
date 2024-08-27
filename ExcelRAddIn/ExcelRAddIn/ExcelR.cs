@@ -10,7 +10,6 @@ using System.Configuration;
 using System.Linq;
 using System.Numerics;
 
-
 namespace ExcelRAddIn
 {
     public static class Script

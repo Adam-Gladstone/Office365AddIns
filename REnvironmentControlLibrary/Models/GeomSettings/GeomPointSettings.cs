@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace REnvironmentControlLibrary.Models.GeomSettings
@@ -9,18 +10,20 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
 
         public GeomPointSettings(string name) : base(name) { }
 
+        protected override List<string> BuildSettingsList()
+        {
+            List<string> settingsList = base.BuildSettingsList();
+
+            settingsList.Add(m_aesthetic.GetSettings());
+
+            return settingsList;
+        }
+
         public override string GetSettings()
         {
-            string content = GetSettings(BuildSettingsList());
+            List<string> settingsList = BuildSettingsList();
 
-            string aes = m_aesthetic.GetSettings();
-            if (!string.IsNullOrEmpty(aes))
-            {
-                if(!string.IsNullOrEmpty(content))
-                    content += ", ";
-
-                content += aes;
-            }
+            string content = GetSettings(settingsList);
 
             string geom = $"geom_point({content})";
 
@@ -28,7 +31,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_point"),
+        Category("Point"),
         ReadOnly(false),
         Description("Aesthetic Settings"),
         DisplayName("Aesthetic Settings"),

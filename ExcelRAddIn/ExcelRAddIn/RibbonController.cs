@@ -1,18 +1,11 @@
 ﻿using ExcelDna.Integration;
 using ExcelDna.Integration.CustomUI;
 using REnvironmentControlLibrary;
-using System.Configuration;
-using System.IO.Packaging;
-using System.Runtime.InteropServices;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-
-using System;
-using Microsoft.Office.Interop.Excel;
-using Range = Microsoft.Office.Interop.Excel.Range;
-using REngineWrapper;
 using REnvironmentControlLibrary.ViewModel;
+using System.Configuration;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using Range = Microsoft.Office.Interop.Excel.Range;
 
 
 namespace ExcelRAddIn
@@ -51,6 +44,8 @@ namespace ExcelRAddIn
             Range current = xlApp.ActiveCell;
             if (current == null)
                 return;
+
+            //Script.EngineWrapper.Evaluate("...");
 
             FormPlotSettings formPlotSettings = new FormPlotSettings();
 

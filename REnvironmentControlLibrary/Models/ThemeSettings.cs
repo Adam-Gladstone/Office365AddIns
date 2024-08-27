@@ -1,9 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel;
+using System.Globalization;
+using System;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class ThemeSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is ThemeSettings)
+            {
+                ThemeSettings component = (ThemeSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(ThemeSettingsConverter))
+    ]
     public class ThemeSettings : Settings
     {
         private Param<int> m_base_size = new Param<int>("base_size");
@@ -43,6 +62,12 @@ namespace REnvironmentControlLibrary.Models
             }
 
             return theme;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

@@ -11,16 +11,26 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         private Param<string> m_formula = new Param<string>("formula", false);
         private Param<string> m_se = new Param<string>("se", false);
 
+        private AestheticSettings m_aesthetic = new AestheticSettings();
+
         public GeomSmoothSettings(string name) : base(name) { }
+
+        protected override List<string> BuildSettingsList()
+        {
+            List<string> settingsList = base.BuildSettingsList();
+
+            settingsList.Add(m_method.GetParamValue());
+            settingsList.Add(m_formula.GetParamValue());
+            settingsList.Add(m_se.GetParamValue());
+
+            settingsList.Add(m_aesthetic.GetSettings());
+
+            return settingsList;
+        }
 
         public override string GetSettings()
         {
-            List<string> settingsList = new List<string>()
-            {
-                m_method.GetParamValue(),
-                m_formula.GetParamValue(),
-                m_se.GetParamValue(),
-            };
+            List<string> settingsList = BuildSettingsList();
 
             string content = GetSettings(settingsList);
 
@@ -30,7 +40,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_smooth"),
+        Category("Smoother"),
         ReadOnly(false),
         DisplayName("Method"),
         Display(Order = 0),
@@ -43,7 +53,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_smooth"),
+        Category("Smoother"),
         ReadOnly(false),
         DisplayName("Formula"),
         Display(Order = 1),
@@ -56,7 +66,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_smooth"),
+        Category("Smoother"),
         ReadOnly(false),
         DisplayName("Confidence Interval"),
         Display(Order = 2),
@@ -68,6 +78,19 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_se.Value; }
             set { m_se.Value = value; }
+        }
+
+        [
+        Category("Smoother"),
+        ReadOnly(false),
+        Description("Aesthetic Settings"),
+        DisplayName("Aesthetic Settings"),
+        Display(Order = 6),
+        TypeConverter(typeof(AestheticConverter))]
+        public AestheticSettings AestheticSettings
+        {
+            get { return m_aesthetic; }
+            set { m_aesthetic = value; }
         }
     }
 }

@@ -15,7 +15,7 @@
         <!--  Template for the list view message items  -->
         <DataTemplate x:Key="MessageTemplate">
 
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                 <Image
                     Width="16"
                     Height="16"
@@ -46,11 +46,11 @@
             <ListView.View>
 
                 <GridView>
-                    <GridViewColumn Width="100" DisplayMemberBinding="{Binding Name}">
+                    <GridViewColumn Width="50" DisplayMemberBinding="{Binding Name}">
                         <GridViewColumnHeader Content="Name" />
                     </GridViewColumn>
 
-                    <GridViewColumn Width="200" DisplayMemberBinding="{Binding Contents}">
+                    <GridViewColumn Width="150" DisplayMemberBinding="{Binding Contents}">
                         <GridViewColumnHeader Content="Contents" />
                     </GridViewColumn>
                 </GridView>
@@ -78,7 +78,7 @@
                 <GridView>
 
                     <GridViewColumn
-                        Width="300"
+                        Width="200"
                         CellTemplate="{StaticResource MessageTemplate}"
                         Header="Messages" />
 

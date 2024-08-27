@@ -1,9 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class ScaleSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is ScaleSettings)
+            {
+                ScaleSettings component = (ScaleSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(ScaleSettingsConverter))
+    ]
     public class ScaleSettings : Settings
     {
         private Param<string> m_breaks = new Param<string>("breaks");
@@ -53,6 +72,12 @@ namespace REnvironmentControlLibrary.Models
             }
 
             return scale;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

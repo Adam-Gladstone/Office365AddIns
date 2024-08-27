@@ -41,6 +41,8 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             settingsList.Add(m_width.GetParamValue());
             settingsList.Add(m_drop.GetParamValue());
 
+            settingsList.Add(m_aesthetic.GetSettings());
+
             return settingsList;
         }
 
@@ -50,22 +52,13 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
 
             string content = GetSettings(settingsList);
 
-            string aes = m_aesthetic.GetSettings();
-            if (!string.IsNullOrEmpty(aes))
-            {
-                if (!string.IsNullOrEmpty(content))
-                    content += ", ";
-
-                content += aes;
-            }
-
             string geom = $"geom_dotplot({content})";
 
             return geom;
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Bin width"),
         Display(Order = 0),
@@ -78,7 +71,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Bin axis"),
         Display(Order = 1),
@@ -91,7 +84,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Method"),
         Display(Order = 2),
@@ -104,7 +97,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Bin positions"),
         Display(Order = 3),
@@ -117,7 +110,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Stack direction"),
         Display(Order = 4),
@@ -130,7 +123,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Stack ratio"),
         Display(Order = 5),
@@ -143,7 +136,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Dot size"),
         Display(Order = 6),
@@ -156,7 +149,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Stack groups"),
         Display(Order = 7),
@@ -170,7 +163,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Origin"),
         Display(Order = 8),
@@ -183,7 +176,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Right"),
         Display(Order = 9),
@@ -197,7 +190,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         DisplayName("Width"),
         Display(Order = 10),
@@ -210,7 +203,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_dotplot"),
+        Category("Dotplot"),
         ReadOnly(false),
         Description("Aesthetic Settings"),
         DisplayName("Aesthetic Settings"),

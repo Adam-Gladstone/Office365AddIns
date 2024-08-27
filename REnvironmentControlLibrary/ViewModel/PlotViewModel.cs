@@ -16,10 +16,14 @@ namespace REnvironmentControlLibrary.ViewModel
             "polygon", "quantile", "ribbon", "rug", "segment", "smooth", "step", "text", "tile", "vline"
         };
 
-        public static List<string> Scales = new List<string>()
+        public static List<string> XScales = new List<string>()
         {
-            "", "x_continuous", "y_continuous", "x_log10", "y_log10", "x_reverse", "y_reverse", "x_sqrt", "y_sqrt", "x_binned", "y_binned",
-            // "x_date", "y_date", "x_datetime", "y_datetime", "x_time", "y_time"
+            "", "x_continuous", "x_log10", "x_reverse", "x_sqrt", "x_binned", "x_date", "x_datetime", "x_time"
+        };
+
+        public static List<string> YScales = new List<string>()
+        {
+            "", "y_continuous", "y_log10", "y_reverse", "y_sqrt", "y_binned", "y_date", "y_datetime", "y_time"
         };
 
         public static List<string> Coords = new List<string>()
@@ -42,7 +46,9 @@ namespace REnvironmentControlLibrary.ViewModel
 
         public CoordSettings CoordSettings { get; set; } = new CoordSettings("");
 
-        public ScaleSettings ScaleSettings { get; set; } = new ScaleSettings("");
+        public ScaleSettings XScaleSettings { get; set; } = new ScaleSettings("");
+
+        public ScaleSettings YScaleSettings { get; set; } = new ScaleSettings("");
 
         public ThemeSettings ThemeSettings { get; set; } = new ThemeSettings("");
 
@@ -146,10 +152,16 @@ namespace REnvironmentControlLibrary.ViewModel
             ThemeSettings = new ThemeSettings(theme);
         }
 
-        public void SetScale(string scale)
+        public void SetXScale(string scale)
         {
-            ScaleSettings = new ScaleSettings(scale);
+            XScaleSettings = new ScaleSettings(scale);
         }
+
+        public void SetYScale(string scale)
+        {
+            YScaleSettings = new ScaleSettings(scale);
+        }
+
 
         public void SetCoords(string coords)
         {
@@ -163,7 +175,8 @@ namespace REnvironmentControlLibrary.ViewModel
                 DataSettings.GetSettings(),
                 GetGeomSettings(),
                 LabelSettings.GetSettings(),
-                ScaleSettings.GetSettings(),
+                XScaleSettings.GetSettings(),
+                YScaleSettings.GetSettings(),
                 CoordSettings.GetSettings(),
                 FacetSettings.GetSettings(),
                 ThemeSettings.GetSettings()

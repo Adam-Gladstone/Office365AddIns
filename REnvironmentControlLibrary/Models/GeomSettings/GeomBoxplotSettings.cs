@@ -23,6 +23,8 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             settingsList.Add(m_varwidth.GetParamValue());
             settingsList.Add(m_outliers.GetParamValue());
 
+            settingsList.Add(m_aesthetic.GetSettings());
+
             return settingsList;
         }
 
@@ -32,22 +34,13 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
 
             string content = GetSettings(settingsList);
 
-            string aes = m_aesthetic.GetSettings();
-            if (!string.IsNullOrEmpty(aes))
-            {
-                if (!string.IsNullOrEmpty(content))
-                    content += ", ";
-
-                content += aes;
-            }
-
             string geom = $"geom_boxplot({content})";
 
             return geom;
         }
 
         [
-        Category("geom_boxplot"),
+        Category("Boxplot"),
         ReadOnly(false),
         DisplayName("Notch"),
         Display(Order = 0),
@@ -62,7 +55,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_boxplot"),
+        Category("Boxplot"),
         ReadOnly(false),
         DisplayName("Varwidth"),
         Display(Order = 1),
@@ -77,7 +70,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_boxplot"),
+        Category("Boxplot"),
         ReadOnly(false),
         DisplayName("Outliers"),
         Display(Order = 2),
@@ -92,7 +85,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_boxplot"),
+        Category("Boxplot"),
         ReadOnly(false),
         Description("Aesthetic Settings"),
         DisplayName("Aesthetic Settings"),

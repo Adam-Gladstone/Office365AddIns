@@ -1,8 +1,28 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 
 namespace REnvironmentControlLibrary.Models
 {
+    internal class DataSettingsConverter : ExpandableObjectConverter
+    {
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destType)
+        {
+            if (destType == typeof(string) && value is DataSettings)
+            {
+                DataSettings component = (DataSettings)value;
+                return component.ToString();
+            }
+            return base.ConvertTo(context, culture, value, destType);
+        }
+    }
+
+    [
+    Serializable,
+    TypeConverter(typeof(DataSettingsConverter))
+    ]
     public class DataSettings : Settings
     {
         private Param<string> m_data = new Param<string>("data");
@@ -11,22 +31,32 @@ namespace REnvironmentControlLibrary.Models
 
         public DataSettings() { }
 
+        protected virtual List<string> BuildSettingsList()
+        {
+            List<string> settingsList = new List<string>
+            {
+                m_data.GetParamValue(),
+                m_aesthetic.GetSettings()
+            };
+
+            return settingsList;
+        }
+
         public override string GetSettings()
         {
-            string aes = m_aesthetic.GetSettings();
+            List<string> settingsList = BuildSettingsList();
 
-            string plotData = string.Empty;
+            string content = GetSettings(settingsList);
 
-            if (!string.IsNullOrEmpty(aes))
-            {
-                plotData = $"ggplot({m_data.GetParamValue()}, {aes})";
-            }
-            else
-            {
-                plotData = $"ggplot({m_data.GetParamValue()})";
-            }
+            string plotData = $"ggplot({content})";
 
             return plotData;
+        }
+
+        public override string ToString()
+        {
+            string content = GetSettings(BuildSettingsList());
+            return content;
         }
 
         [

@@ -151,34 +151,108 @@ Datasets: AirPassengers, diamonds, mpg, mtcars
 	NOTE: scales requires being able to add scale_x_continuous and scale_y_continuous: currently you can only add one.
 - added support for some themes attributes
 
-
 ## 22/08/2024
 - added support for Facets
 
+## 26/08/2024
+- updated AestheticSettings with additional attributes
+- added two 'scales' panels: x and y scales
 
-## 23/08/2024
+https://stackoverflow.com/questions/tagged/propertygrid?tab=Newest
 
 
+## 27/08/2024
+- Reconsider the class hierarchy: the 'basic' settings and the 'aes' can be used together
+	e.g. geom_vline(xintercept = 10, fill = 'lightblue')
+	     geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
+
+https://ggplot2.tidyverse.org/articles/ggplot2-specs.html
+Colour/fill
+	name
+	rgb(a)
+Lines
+	linetype
+	linewidth
+	line end/join params
+Polygons
+	The border of the polygon is controlled by the colour, linetype, and linewidth aesthetics as described above. The inside is controlled by fill.
+Point
+	shape
+	colour/fill
+Text
+	font family: "sans", "serif", "mono"
+	font face: "plain", "bold", "italic", "bold.italic"
+	font size: 
+	justification: Horizontal and vertical justification have the same parameterisation, either a string (“top”, “middle”, “bottom”, “left”, “center”, “right”) or a number between 0 and 1.
+
+- remove: 'mapping = ', ('data = ', ?)
+- move the linetype, width etc settings into a basic settings.
+- Redo 'BasicSettings' class as a separate (serialisable) class.
+- allow AestheticSettings to inherit from this.
+	- therefore you can have
+		e.g. geom_vline(xintercept = 10, fill = 'lightblue')
+			 geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- additional testing
+- add support for more geoms: ...
+
+Messages in the REnvironmentPanel:
+- add support for copying and viewing long messages in a message box ? or a tooltip?
+- add support for clearing messages
 
 
 
 TO DO
-- additional testing
-- add support for more geoms: ...
 - add up/down control to the list of geoms ==> in progress
-- consider adding two 'coords' panels?
 - Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
 
 
-- Reconsider the class hierarchy: the 'basic' settings and the 'aes' can be used together
-	e.g. geom_vline(xintercept = 10, fill = 'lightblue')
-	     geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
 
 
 snippets: add propggp:
         [Category(""), ReadOnly(false), DisplayName("$Name$"), Display(Order = 0), Description("")]
         public string $Name$ { get { return m_$name$.Value; } set { m_$name$.Value = value; } }
 
+
+---------------------------------------------------------------------------------------------------------
+Rework the design (using WPF components)
+FormEnvironmentSettings contains:
+	1) REnvironmentSettingsControlHost (derived from System.Windows.Forms.UserControl)
+		The "control host" contains a System.Windows.Forms.Integration.ElementHost elementHost1
+		This control hosts a WPF user control
+		2) REnvironmentSettingsControl which contains the logic for settings (Home, Path, packages to load)
+- Plot settings
+	Tab Control + data grids
+PropertyItems should be initialised with a description attribute from documentation.
+- 1 week to design a grid containing settings and values; editable
+(https://github.com/SoftFluent/SoftFluent.Windows)
+---------------------------------------------------------------------------------------------------------
+Wizard Approach (single dataset only?):
+Data:		What dataset do you want to use?
+X and Y:	What data for the x (independent) axis?
+			What data for the y (dependent) axis?
+Chart type:	What type(s) of charts do you want? (geoms)
+Grouping:	Group or facet?
+Theme:		Select a theme
+---------------------------------------------------------------------------------------------------------
+NOTE: esquisse: https://dreamrs.shinyapps.io/esquisse/
+
+Consider how to 'input' information about the data frame: columns, types, rows, ...
+Consider adding drag & drop
 
 
 

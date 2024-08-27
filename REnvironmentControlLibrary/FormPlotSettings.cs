@@ -31,9 +31,14 @@ namespace REnvironmentControlLibrary
             }
 
             // Scales and Coords and Themes are not bound to a property grid until comboBox changes
-            if (propertyGridScales.PropertySort == PropertySort.CategorizedAlphabetical)
+            if (propertyGridXScales.PropertySort == PropertySort.CategorizedAlphabetical)
             {
-                propertyGridScales.PropertySort = PropertySort.Categorized;
+                propertyGridXScales.PropertySort = PropertySort.Categorized;
+            }
+
+            if (propertyGridYScales.PropertySort == PropertySort.CategorizedAlphabetical)
+            {
+                propertyGridYScales.PropertySort = PropertySort.Categorized;
             }
 
             if (propertyGridCoords.PropertySort == PropertySort.CategorizedAlphabetical)
@@ -70,9 +75,13 @@ namespace REnvironmentControlLibrary
                 comboBoxGeoms.Items.AddRange(PlotViewModel.GeomTypes.ToArray());
                 comboBoxGeoms.SelectedIndex = 0;
 
-                ComboBox comboBoxScales = (ComboBox)tabPageScales.Controls["comboBoxScales"];
-                comboBoxScales.Items.AddRange(PlotViewModel.Scales.ToArray());
-                comboBoxScales.SelectedIndex = 0;
+                ComboBox comboBoxXScales = (ComboBox)tabPageScales.Controls["comboBoxXScales"];
+                comboBoxXScales.Items.AddRange(PlotViewModel.XScales.ToArray());
+                comboBoxXScales.SelectedIndex = 0;
+
+                ComboBox comboBoxYScales = (ComboBox)tabPageScales.Controls["comboBoxYScales"];
+                comboBoxYScales.Items.AddRange(PlotViewModel.YScales.ToArray());
+                comboBoxYScales.SelectedIndex = 0;
 
                 ComboBox comboBoxCoords = (ComboBox)tabPageCoords.Controls["comboBoxCoords"];
                 comboBoxCoords.Items.AddRange(PlotViewModel.Coords.ToArray());
@@ -123,22 +132,42 @@ namespace REnvironmentControlLibrary
             }
         }
 
-        private void comboBoxScales_SelectedIndexChanged(object sender, EventArgs e)
+        private void comboBoxXScales_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ComboBox comboBoxScales = (ComboBox)sender;
-            if (comboBoxScales != null)
+            ComboBox comboBoxXScales = (ComboBox)sender;
+            if (comboBoxXScales != null)
             {
-                string scale = comboBoxScales.SelectedItem.ToString();
+                string scale = comboBoxXScales.SelectedItem.ToString();
 
-                if(!string.IsNullOrEmpty(scale))
+                if (!string.IsNullOrEmpty(scale))
                 {
-                    PlotViewModel.SetScale(scale);
+                    PlotViewModel.SetXScale(scale);
 
-                    propertyGridScales.SelectedObject = PlotViewModel.ScaleSettings;
+                    propertyGridXScales.SelectedObject = PlotViewModel.XScaleSettings;
                 }
                 else
                 {
-                    propertyGridScales.SelectedObject = null;
+                    propertyGridXScales.SelectedObject = null;
+                }
+            }
+        }
+
+        private void comboBoxYScales_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox comboBoxYScales = (ComboBox)sender;
+            if (comboBoxYScales != null)
+            {
+                string scale = comboBoxYScales.SelectedItem.ToString();
+
+                if (!string.IsNullOrEmpty(scale))
+                {
+                    PlotViewModel.SetYScale(scale);
+
+                    propertyGridYScales.SelectedObject = PlotViewModel.YScaleSettings;
+                }
+                else
+                {
+                    propertyGridYScales.SelectedObject = null;
                 }
             }
         }

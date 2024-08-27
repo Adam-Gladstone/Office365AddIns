@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace REnvironmentControlLibrary.Models.GeomSettings
 {
-    public class GeomVlineSettings : GeomLineSettings
+    public class GeomVlineSettings : GeomSettings
     {
         private Param<string> m_xintercept = new Param<string>("xintercept", false);
+
+        private AestheticSettings m_aesthetic = new AestheticSettings();
 
         public GeomVlineSettings(string name) : base(name) { }
 
@@ -15,6 +17,8 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             List<string> settingsList = base.BuildSettingsList();
 
             settingsList.Add(m_xintercept.GetParamValue());
+
+            settingsList.Add(m_aesthetic.GetSettings());
 
             return settingsList;
         }
@@ -31,7 +35,7 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         }
 
         [
-        Category("geom_vline"),
+        Category("Vline"),
         ReadOnly(false),
         DisplayName("X Intercept"),
         Display(Order = 12),
@@ -41,6 +45,19 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_xintercept.Value; }
             set { m_xintercept.Value = value; }
+        }
+
+        [
+        Category("Vline"),
+        ReadOnly(false),
+        Description("Aesthetic Settings"),
+        DisplayName("Aesthetic Settings"),
+        Display(Order = 11),
+        TypeConverter(typeof(AestheticConverter))]
+        public AestheticSettings AestheticSettings
+        {
+            get { return m_aesthetic; }
+            set { m_aesthetic = value; }
         }
     }
 }
