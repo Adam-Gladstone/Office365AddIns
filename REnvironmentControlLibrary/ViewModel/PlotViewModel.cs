@@ -94,6 +94,10 @@ namespace REnvironmentControlLibrary.ViewModel
                     geomSettings = new GeomDotplotSettings(geom);
                     break;
 
+                case "text":
+                    geomSettings = new GeomTextSettings(geom);
+                    break;
+
                 default:
                     geomSettings = new GeomSettings(geom);
                     break;

@@ -34,6 +34,10 @@ namespace REnvironmentControlLibrary.Models
         private Param<string> m_upper = new Param<string>("upper", false);
         private Param<string> m_x0 = new Param<string>("x0", false);
         private Param<string> m_y0 = new Param<string>("y0", false);
+        private Param<string> m_label = new Param<string>("label", false);
+        private Param<string> m_family = new Param<string>("family", false);
+        private Param<string> m_fontface = new Param<string>("fontface", false);
+
 
         public AestheticSettings() { }
 
@@ -62,7 +66,10 @@ namespace REnvironmentControlLibrary.Models
                 m_xupper.GetParamValue(),
                 m_upper.GetParamValue(),
                 m_x0.GetParamValue(),
-                m_y0.GetParamValue()
+                m_y0.GetParamValue(),
+                m_label.GetParamValue(),
+                m_family.GetParamValue(),
+                m_fontface.GetParamValue()
             };
 
             settingsList.AddRange(base.BuildSettingsList());
@@ -374,6 +381,46 @@ namespace REnvironmentControlLibrary.Models
             get { return m_y0.Value; }
             set { m_y0.Value = value; }
         }
+
+        [
+        Category("Aesthetics"),
+        ReadOnly(false),
+        DisplayName("Label"),
+        Display(Order = 22),
+        Description("Text label.")
+        ]
+        public string Label
+        {
+            get { return m_label.Value; }
+            set { m_label.Value = value; }
+        }
+
+        [
+        Category("Aesthetics"),
+        ReadOnly(false),
+        DisplayName("Font family"),
+        Display(Order = 23),
+        Description("One of: 'sans', 'serif', 'mono'.")
+        ]
+        public string Family
+        {
+            get { return m_family.Value; }
+            set { m_family.Value = value; }
+        }
+
+        [
+        Category("Aesthetics"),
+        ReadOnly(false),
+        DisplayName("Font face"),
+        Display(Order = 24),
+        Description("One of: 'plain', 'bold', 'italic', 'bold.italic'.")
+        ]
+        public string Face
+        {
+            get { return m_fontface.Value; }
+            set { m_fontface.Value = value; }
+        }
+
     }
     internal class AestheticConverter : ExpandableObjectConverter
     {

@@ -9,6 +9,9 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
     {
         private BasicSettings m_basicSettings = new BasicSettings();
 
+        private AestheticSettings m_aesthetic = new AestheticSettings();
+
+
         protected string m_name;
 
         public GeomSettings(string name)
@@ -19,7 +22,8 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         protected virtual List<string> BuildSettingsList()
         {
             List<string> settingsList = new List<string>() 
-            { 
+            {
+                m_aesthetic.GetSettings(),
                 m_basicSettings.GetSettings() 
             };
 
@@ -50,6 +54,19 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_basicSettings; }
             set { m_basicSettings = value; }
+        }
+
+        [
+        Category("Geoms"),
+        ReadOnly(false),
+        Description("Aesthetic Settings"),
+        DisplayName("Aesthetic Settings"),
+        Display(Order = 2),
+        TypeConverter(typeof(AestheticConverter))]
+        public AestheticSettings AestheticSettings
+        {
+            get { return m_aesthetic; }
+            set { m_aesthetic = value; }
         }
     }
 }

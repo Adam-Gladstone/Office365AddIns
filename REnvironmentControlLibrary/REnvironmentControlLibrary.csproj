@@ -83,6 +83,7 @@
     <Compile Include="Models\GeomSettings\GeomLineSettings.cs" />
     <Compile Include="Models\GeomSettings\GeomPointSettings.cs" />
     <Compile Include="Models\GeomSettings\GeomSmoothSettings.cs" />
+    <Compile Include="Models\GeomSettings\GeomTextSettings.cs" />
     <Compile Include="Models\GeomSettings\GeomVlineSettings.cs" />
     <Compile Include="Models\Params.cs" />
     <Compile Include="Models\DataSettings.cs" />

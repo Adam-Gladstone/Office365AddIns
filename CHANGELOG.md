@@ -194,40 +194,25 @@ Text
 			 geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+====================================
+TO DO
+====================================
 - additional testing
-- add support for more geoms: ...
+- add support for more geoms: (see notes)
 
 Messages in the REnvironmentPanel:
 - add support for copying and viewing long messages in a message box ? or a tooltip?
 - add support for clearing messages
 
-
-
-TO DO
 - add up/down control to the list of geoms ==> in progress
 - Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
 
 
 
-
+---------------------------------------------------------------------------------------------------------
 snippets: add propggp:
         [Category(""), ReadOnly(false), DisplayName("$Name$"), Display(Order = 0), Description("")]
         public string $Name$ { get { return m_$name$.Value; } set { m_$name$.Value = value; } }
-
-
 ---------------------------------------------------------------------------------------------------------
 Rework the design (using WPF components)
 FormEnvironmentSettings contains:
@@ -253,11 +238,3 @@ NOTE: esquisse: https://dreamrs.shinyapps.io/esquisse/
 
 Consider how to 'input' information about the data frame: columns, types, rows, ...
 Consider adding drag & drop
-
-
-
-
-
-
-
-

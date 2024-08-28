@@ -11,8 +11,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         private Param<string> m_varwidth = new Param<string>("varwidth", false);
         private Param<string> m_outliers = new Param<string>("outliers", false);
 
-        private AestheticSettings m_aesthetic = new AestheticSettings();
-
         public GeomBoxplotSettings(string name) : base(name) { }
 
         protected override List<string> BuildSettingsList()
@@ -22,8 +20,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             settingsList.Add(m_notch.GetParamValue());
             settingsList.Add(m_varwidth.GetParamValue());
             settingsList.Add(m_outliers.GetParamValue());
-
-            settingsList.Add(m_aesthetic.GetSettings());
 
             return settingsList;
         }
@@ -82,19 +78,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_outliers.Value; }
             set { m_outliers.Value = value; }
-        }
-
-        [
-        Category("Boxplot"),
-        ReadOnly(false),
-        Description("Aesthetic Settings"),
-        DisplayName("Aesthetic Settings"),
-        Display(Order = 3),
-        TypeConverter(typeof(AestheticConverter))]
-        public AestheticSettings AestheticSettings
-        {
-            get { return m_aesthetic; }
-            set { m_aesthetic = value; }
         }
     }
 }

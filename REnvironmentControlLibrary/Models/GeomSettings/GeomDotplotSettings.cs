@@ -20,8 +20,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         private Param<double> m_width = new Param<double>("width", false);
         private Param<string> m_drop = new Param<string>("drop", false);
 
-        private AestheticSettings m_aesthetic = new AestheticSettings();
-
         public GeomDotplotSettings(string name) : base(name) { }
 
         protected override List<string> BuildSettingsList()
@@ -40,8 +38,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
             settingsList.Add(m_right.GetParamValue());
             settingsList.Add(m_width.GetParamValue());
             settingsList.Add(m_drop.GetParamValue());
-
-            settingsList.Add(m_aesthetic.GetSettings());
 
             return settingsList;
         }
@@ -200,19 +196,6 @@ namespace REnvironmentControlLibrary.Models.GeomSettings
         {
             get { return m_width.Value; }
             set { m_width.Value = value; }
-        }
-
-        [
-        Category("Dotplot"),
-        ReadOnly(false),
-        Description("Aesthetic Settings"),
-        DisplayName("Aesthetic Settings"),
-        Display(Order = 11),
-        TypeConverter(typeof(AestheticConverter))]
-        public AestheticSettings AestheticSettings
-        {
-            get { return m_aesthetic; }
-            set { m_aesthetic = value; }
         }
     }
 }

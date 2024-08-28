@@ -71,33 +71,33 @@ Further, you can specify the number of columns/rows to display as such
 
 Geoms
 [OK]	abline	Line, specified by slope and intercept
-[]	area	Area plots
-[]	bar	Bars, rectangles with bases on y-axis
+[OK]	area	Area plots
+[OK]	bar	Bars, rectangles with bases on y-axis
 [OK]	boxplot	Box-and-whisker plot
 []	col
 []	contour	Display contours of a 3d surface in 2d
-[]	crossbar	Hollow bar with middle indicated by horizontal line
-[]	density	Display a smooth density estimate
+[OK]	crossbar	Hollow bar with middle indicated by horizontal line
+[OK]	density	Display a smooth density estimate
 []	density2d	Contours from a 2d density estimate
 [OK]	dotplot
-[]	errorbar	Error bars
+[OK]	errorbar	Error bars
 []	histogram	Histogram
 [OK]	hline	Line, horizontal
 []	interval	Base for all interval (range) geoms
 []	jitter	Points, jittered to reduce overplotting
 [OK]	line	Connect observations, in order of x value
-[]	linerange	An interval represented by a vertical line
+[OK]	linerange	An interval represented by a vertical line
 []	path	Connect observations, in original order
 [OK]	point	Points, as for a scatterplot
-[]	pointrange	An interval represented by a vertical line, with a point in the middle
+[OK]	pointrange	An interval represented by a vertical line, with a point in the middle
 []	polygon	Polygon, a filled path
 []	quantile	Add quantile lines from a quantile regression
 []	ribbon	Ribbons, y range with continuous x values
 []	rug	Marginal rug plots
 []	segment	Single line segments
 [OK]	smooth	Add a smoothed condition mean
-[]	step	Connect observations by stairs
-[]	text	Textual annotations
+[OK]	step	Connect observations by stairs
+[OK]	text	Textual annotations
 []	tile	Tile plot as densely as possible, assuming that every tile is the same size
 [OK]	vline	Line, vertical
 
