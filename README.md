@@ -134,7 +134,31 @@ Both the ExcelRAddIn and the RScriptAddIn projects have /Tests subdirectories. T
 
 <!-- Latest Updates -->
 ## Latest Updates
+These are the latest updates from 14/11/2024.
 
+### Create plot button
+- The new Create plot button allows you to generate the script required for outputting a ggplot (https://ggplot2.tidyverse.org/) graph.
+
+<img src="Images/CreatePlot-Data.png" alt="Create Plot with Data" width="100%" height="100%">
+
+The inputs are divided into Data, Layers, Labels, Scales, Coords, Facets, and Theme. These correspond to the major parts of a ggplot.
+
+The Data page allows you to select the data and set the aesthetic for the plot.
+
+The Layers page allows you to set the specifics of the chart type: the geom. After adding a geom, double clicking the label takes you to further attribute settings appropriate to the specific geom.
+
+The Theme page allows you to select a theme.
+
+<img src="Images/CreatePlot-Layers.png" alt="Set the geoms" width="100%" height="100%">
+
+Once complete, the script is output, wrapped in a `plot(...)` function. This can be evaluated using `RScript.Evaluate()`. The resulting plot can be copied as a metafile and saved in the worksheet.
+
+<img src="Images/Boxplot-example.png" alt="Example boxplot" width="50%" height="50%">
+
+- Minor UI updates to the panel.
+- Added a directory 'Publish' that contains the binaries.
+
+These are the updates from 27/04/2024
 ### Ease of use features.
 - Users can specify packages to load when the add-in is initialised in the Add-In settings available from the R AddIn menu.
 
