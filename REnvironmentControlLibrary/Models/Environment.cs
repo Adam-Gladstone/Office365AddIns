@@ -16,9 +16,8 @@ namespace REnvironmentControlLibrary.Models
 
             Type = type;
 
-            Uri uriSource = null;
-
-            if(Type == MessageType.Information)
+            Uri uriSource;
+            if (Type == MessageType.Information)
             {
                 uriSource = new Uri(@"/REnvironmentControlLibrary;component/Assets/information.png", UriKind.Relative);
             }

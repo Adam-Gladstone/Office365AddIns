@@ -177,7 +177,7 @@ DocProject/Help/Html2
 DocProject/Help/html
 
 # Click-Once directory
-publish/
+# publish/
 
 # Publish Web Output
 *.[Pp]ublish.xml
@@ -363,3 +363,6 @@ MigrationBackup/
 FodyWeavers.xsd
 .Rproj.user
 /Project Notes.txt
+ggplot2 notes.txt
+/ExcelRAddIn/ExcelRAddIn/Docs/Menu Driven Data Science.txt
+ggplot2 notes.txt

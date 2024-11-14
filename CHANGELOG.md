@@ -14,8 +14,18 @@ Provide a wrapper API around the 'lm' (and 'glm') function.
 
 TO DO:
 - Consider adding some notion of package or library/package: this would allow you to simply call a function via a wrapper and have the wrapper determine if a call to 'library(package)' is required. The package class could determine what the default model results should be (assuming you have a model)?
+
+ggplot2
 - Investigate inserting a plot directly into Excel rather than via the clipboard.
-- Consider using a tabbed control for the R Environment panel.
+- additional testing
+- add support for more geoms
+- consider adding a simplified 'wizard' interface.
+
+Messages in the REnvironmentPanel:
+- add support for copying and viewing long messages in a message box ? or a tooltip?
+- add support for clearing messages
+- add up/down control to the list of geoms ==> in progress
+- Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
 
 Speculative:
 - Generate the C# code from R.
@@ -88,4 +98,60 @@ NOTE: the settings dialog box still requires a windows form. This is not a WPF p
 ## 25/04/2024
 - Updated the REnvironmentPanel (a WPF user control) to properly use binding for both the messages list and the environment list. Refactored the code to incorporate a proper MVVM organisation.
 
+## 27/07/2024
+- Updated the REnvironmentPanel Messages list view to include a header.
+
+## 31/07/2024
+- Added 'Create Plot' helper function to produce ggplot script for visualisations.
+- consider how to handle multiple 'geoms' ?
+
+## 17/08/2024
+- added AestheticSettings property class and added it to data property grid
+
+## 19/08/2024
+- Added support for FormAestheticSettings as a separate property grid.
+- Added support for multiple geoms
+
+## 20/08/2024
+- added support for bool to (unquoted) TRUE/FALSE values
+- corrected issue with adding sub-item text in geoms list view
+- check class hierarchy
+- added support for: 
+	geom_abline
+	geom_hline : yintercept
+	geom_vline : xintercept
+- added support for boxplot: 
+	notch = T/F, varwidth = T/F, outliers = T/F
+	How to handle outlier specification? (outlier colour/fill/shape/size/stroke/alpha)
+- added support for dotplot
+
+Testing
+- Created a new workbook: GGPlot Tests.xlsx. Add a separate worksheet for each geom type.
+Datasets: AirPassengers, diamonds, mpg, mtcars
+
+## 21/08/2024
+- check how 'stat_' functions work: not currently supported by this script generator.
+- added to aes: xmin, xmax, ymin, ymax, xend, yend. https://ggplot2.tidyverse.org/reference/aes_position.html
+- added support for coords
+- added support for scales, separated both x and y scales: https://ggplot2.tidyverse.org/reference/scale_continuous.html
+- added two 'scales' panels: x and y scales
+- added support for some themes attributes
+
+## 22/08/2024
+- added support for Facets
+
+## 26/08/2024
+- updated AestheticSettings with additional attributes
+
+## 27/08/2024
+- removed: 'mapping = ', ('data = ', ?)
+- move the linetype, width etc settings into a basic settings.
+- Redo 'BasicSettings' class as a separate (serialisable) class.
+- allowed AestheticSettings to inherit from this.
+
+## 14/11/2024
+- Updated RibbonController.cs - new Office 365 icons
+- Updated TaskPaneManager.cs - check show hide functionality
+- REnvironmentControlLibrary: updated the icons (assets) and the environment.cs
+- REnvironmentControlLibrary: updated the REnvironmentPanel.xaml - list view background
 
