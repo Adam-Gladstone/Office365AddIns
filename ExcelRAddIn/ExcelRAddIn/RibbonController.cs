@@ -26,9 +26,9 @@ namespace ExcelRAddIn
         <tabs>
           <tab id='tab1' label='R AddIn'>
             <group id='group1' label='R Tools'>
-              <button id='buttonTaskPane' label='Show/Hide Task Pane' size='large' imageMso='GroupPresentationViews' onAction='OnButtonShowHideClicked' />
-              <button id='buttonCreatePlot' label='Create Plot...' size='large' imageMso='GroupChartAnalysis' onAction='OnButtonCreatePlotClicked'/>
-              <button id='buttonSettings' label='Settings...' size='large' imageMso='PropertySheet' onAction='OnButtonSettingsClicked'/>
+              <button id='buttonTaskPane' label='Show/Hide Task Pane' size='large' imageMso='HideTaskPanes' onAction='OnButtonShowHideClicked' />
+              <button id='buttonCreatePlot' label='Create Plot...' size='large' imageMso='ChartInsert' onAction='OnButtonCreatePlotClicked'/>
+              <button id='buttonSettings' label='Settings...' size='large' imageMso='AssetSettings' onAction='OnButtonSettingsClicked'/>
             </group >
           </tab>
         </tabs>
@@ -44,8 +44,6 @@ namespace ExcelRAddIn
             Range current = xlApp.ActiveCell;
             if (current == null)
                 return;
-
-            //Script.EngineWrapper.Evaluate("...");
 
             FormPlotSettings formPlotSettings = new FormPlotSettings();
 

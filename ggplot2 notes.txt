@@ -112,6 +112,24 @@ xmin, xmax, ymin and ymax can be used to specify the position of annotations and
 
 In addition, there are position aesthetics that are contextual to the geometry that they're used in. These are xintercept, yintercept, xmin_final, ymin_final, xmax_final, ymax_final, xlower, lower, xmiddle, middle, xupper, upper, x0 and y0.
 
+https://ggplot2.tidyverse.org/articles/ggplot2-specs.html
+Colour/fill
+	name
+	rgb(a)
+Lines
+	linetype
+	linewidth
+	line end/join params
+Polygons
+	The border of the polygon is controlled by the colour, linetype, and linewidth aesthetics as described above. The inside is controlled by fill.
+Point
+	shape
+	colour/fill
+Text
+	font family: "sans", "serif", "mono"
+	font face: "plain", "bold", "italic", "bold.italic"
+	font size: 
+	justification: Horizontal and vertical justification have the same parameterisation, either a string (“top”, “middle”, “bottom”, “left”, “center”, “right”) or a number between 0 and 1.
 
 
 

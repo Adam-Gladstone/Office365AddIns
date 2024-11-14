@@ -14,8 +14,18 @@ Provide a wrapper API around the 'lm' (and 'glm') function.
 
 TO DO:
 - Consider adding some notion of package or library/package: this would allow you to simply call a function via a wrapper and have the wrapper determine if a call to 'library(package)' is required. The package class could determine what the default model results should be (assuming you have a model)?
+
+ggplot2
 - Investigate inserting a plot directly into Excel rather than via the clipboard.
-- Consider using a tabbed control for the R Environment panel.
+- additional testing
+- add support for more geoms
+- consider adding a simplified 'wizard' interface.
+
+Messages in the REnvironmentPanel:
+- add support for copying and viewing long messages in a message box ? or a tooltip?
+- add support for clearing messages
+- add up/down control to the list of geoms ==> in progress
+- Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
 
 Speculative:
 - Generate the C# code from R.
@@ -106,28 +116,6 @@ NOTE: the settings dialog box still requires a windows form. This is not a WPF p
 - added support for bool to (unquoted) TRUE/FALSE values
 - corrected issue with adding sub-item text in geoms list view
 - check class hierarchy
-
-Class hierarchy
-(abstract) Settings
-	- concatenate settings from List<string>: generic service
-	- GetSettings() override
-
-ThemeSttings : Settings
-LabelSettings : Settings
-DataSettings : Settings
-
-BasicSettings : Settings
-
-	AestheticSettings : BasicSettings
-
-	GeomSettings : BasicSettings
-		- generic 'GetSettings()' override that returns 'geom_'+name, so we can always add 'geom_boxplot()' etc.
-
-		GeomLineSettings : GeomSettings
-		GeomPointSettings : GeomSettings
-		GeomSmoothSettings : GeomSettings
-...
-
 - added support for: 
 	geom_abline
 	geom_hline : yintercept
@@ -139,16 +127,14 @@ BasicSettings : Settings
 
 Testing
 - Created a new workbook: GGPlot Tests.xlsx. Add a separate worksheet for each geom type.
-
 Datasets: AirPassengers, diamonds, mpg, mtcars
 
 ## 21/08/2024
 - check how 'stat_' functions work: not currently supported by this script generator.
 - added to aes: xmin, xmax, ymin, ymax, xend, yend. https://ggplot2.tidyverse.org/reference/aes_position.html
 - added support for coords
-- added support for scales
-	https://ggplot2.tidyverse.org/reference/scale_continuous.html
-	NOTE: scales requires being able to add scale_x_continuous and scale_y_continuous: currently you can only add one.
+- added support for scales, separated both x and y scales: https://ggplot2.tidyverse.org/reference/scale_continuous.html
+- added two 'scales' panels: x and y scales
 - added support for some themes attributes
 
 ## 22/08/2024
@@ -156,85 +142,16 @@ Datasets: AirPassengers, diamonds, mpg, mtcars
 
 ## 26/08/2024
 - updated AestheticSettings with additional attributes
-- added two 'scales' panels: x and y scales
-
-https://stackoverflow.com/questions/tagged/propertygrid?tab=Newest
-
 
 ## 27/08/2024
-- Reconsider the class hierarchy: the 'basic' settings and the 'aes' can be used together
-	e.g. geom_vline(xintercept = 10, fill = 'lightblue')
-	     geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
-
-https://ggplot2.tidyverse.org/articles/ggplot2-specs.html
-Colour/fill
-	name
-	rgb(a)
-Lines
-	linetype
-	linewidth
-	line end/join params
-Polygons
-	The border of the polygon is controlled by the colour, linetype, and linewidth aesthetics as described above. The inside is controlled by fill.
-Point
-	shape
-	colour/fill
-Text
-	font family: "sans", "serif", "mono"
-	font face: "plain", "bold", "italic", "bold.italic"
-	font size: 
-	justification: Horizontal and vertical justification have the same parameterisation, either a string (“top”, “middle”, “bottom”, “left”, “center”, “right”) or a number between 0 and 1.
-
-- remove: 'mapping = ', ('data = ', ?)
+- removed: 'mapping = ', ('data = ', ?)
 - move the linetype, width etc settings into a basic settings.
 - Redo 'BasicSettings' class as a separate (serialisable) class.
-- allow AestheticSettings to inherit from this.
-	- therefore you can have
-		e.g. geom_vline(xintercept = 10, fill = 'lightblue')
-			 geom_vline(aes(xintercept = mean(weight)), fill = 'lightblue')
+- allowed AestheticSettings to inherit from this.
 
+## 14/11/2024
+- Updated RibbonController.cs - new Office 365 icons
+- Updated TaskPaneManager.cs - check show hide functionality
+- REnvironmentControlLibrary: updated the icons (assets) and the environment.cs
+- REnvironmentControlLibrary: updated the REnvironmentPanel.xaml - list view background
 
-====================================
-TO DO
-====================================
-- additional testing
-- add support for more geoms: (see notes)
-
-Messages in the REnvironmentPanel:
-- add support for copying and viewing long messages in a message box ? or a tooltip?
-- add support for clearing messages
-
-- add up/down control to the list of geoms ==> in progress
-- Add support for 'annotate': https://ggplot2.tidyverse.org/reference/annotate.html
-
-
-
----------------------------------------------------------------------------------------------------------
-snippets: add propggp:
-        [Category(""), ReadOnly(false), DisplayName("$Name$"), Display(Order = 0), Description("")]
-        public string $Name$ { get { return m_$name$.Value; } set { m_$name$.Value = value; } }
----------------------------------------------------------------------------------------------------------
-Rework the design (using WPF components)
-FormEnvironmentSettings contains:
-	1) REnvironmentSettingsControlHost (derived from System.Windows.Forms.UserControl)
-		The "control host" contains a System.Windows.Forms.Integration.ElementHost elementHost1
-		This control hosts a WPF user control
-		2) REnvironmentSettingsControl which contains the logic for settings (Home, Path, packages to load)
-- Plot settings
-	Tab Control + data grids
-PropertyItems should be initialised with a description attribute from documentation.
-- 1 week to design a grid containing settings and values; editable
-(https://github.com/SoftFluent/SoftFluent.Windows)
----------------------------------------------------------------------------------------------------------
-Wizard Approach (single dataset only?):
-Data:		What dataset do you want to use?
-X and Y:	What data for the x (independent) axis?
-			What data for the y (dependent) axis?
-Chart type:	What type(s) of charts do you want? (geoms)
-Grouping:	Group or facet?
-Theme:		Select a theme
----------------------------------------------------------------------------------------------------------
-NOTE: esquisse: https://dreamrs.shinyapps.io/esquisse/
-
-Consider how to 'input' information about the data frame: columns, types, rows, ...
-Consider adding drag & drop

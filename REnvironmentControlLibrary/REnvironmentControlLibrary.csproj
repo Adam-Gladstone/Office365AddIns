@@ -131,7 +131,11 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <PackageReference Include="FontAwesome.WPF">
+      <Version>4.7.0.9</Version>
+    </PackageReference>
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\error.png" />
     <Resource Include="Assets\information.png" />

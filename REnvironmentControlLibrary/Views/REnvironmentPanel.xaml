@@ -11,6 +11,7 @@
     mc:Ignorable="d">
 
     <Control.Resources>
+        <FontFamily x:Key="FontAwesome">/Fonts/fontawesome-webfont.ttf#FontAwesome</FontFamily>
 
         <!--  Template for the list view message items  -->
         <DataTemplate x:Key="MessageTemplate">
@@ -21,7 +22,12 @@
                     Height="16"
                     Margin="0,0,5,0"
                     Source="{Binding MessageIcon}" />
-                <TextBlock VerticalAlignment="Center" Text="{Binding Message}" />
+                
+                <TextBlock VerticalAlignment="Center" 
+                           Text="{Binding Message}" 
+                           TextTrimming="WordEllipsis"
+                           TextWrapping="Wrap"
+                           />
             </StackPanel>
 
         </DataTemplate>
@@ -41,7 +47,8 @@
         </Grid.RowDefinitions>
 
         <!--  Environment list view  -->
-        <ListView x:Name="lvEnvironment" ItemsSource="{Binding EnvironmentItems}">
+        <ListView x:Name="lvEnvironment" 
+                  ItemsSource="{Binding EnvironmentItems}">
 
             <ListView.View>
 
@@ -71,6 +78,8 @@
             x:Name="lvMessages"
             Grid.Row="2"
             Grid.Column="0"
+            Background="Black"
+            Foreground="LimeGreen"
             ItemsSource="{Binding Messages}">
 
             <ListView.View>
@@ -80,7 +89,7 @@
                     <GridViewColumn
                         Width="200"
                         CellTemplate="{StaticResource MessageTemplate}"
-                        Header="Messages" />
+                        Header="Messages"/>
 
                 </GridView>
 
