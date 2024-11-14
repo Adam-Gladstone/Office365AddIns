@@ -1,0 +1,70 @@
+Menu Driven Data Science 
+(a.k.a ExcelRAddIn)
+
+Menu						Backend facility (via R)
+Analysis
+	Agreement Analysis
+	Cluster Analysis
+	Contingency Tables
+	Correlation
+	Factor Analysis
+	Market Basket
+	Means
+	Missing Values
+	Non-parametric Tests
+	Proportions
+	Reliability Analysis
+	Summary Analysis
+	Survival Analysis
+	Tables
+	Time Series
+	Variance
+
+Data
+
+
+Distribution
+	Continuous
+	Discrete
+
+Graphics
+
+Model Fitting
+
+Model Tuning
+
+Model Statistics
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
