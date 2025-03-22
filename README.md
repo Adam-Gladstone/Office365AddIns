@@ -105,16 +105,60 @@ At this point the projects can be run under the debugger in the usual way. More 
 * Office365 Microsoft Excel
 * R (a recent version e.g. 4.3.0, 4.3.1)
 
+NOTE: The add-in depends on R. Please make sure that R is installed first. 
+The default config file has the following additional libraries listed:
+	tidyverse, dplyr, forecast, ggplot2, ggthemes
+If you do not need these, you should remove them (otherwise you will see some error messages indicating that the named package was not found).
+
 ### Installation
-#### ExcelRAddIn
-1. Copy the bin\Debug or bin\Release contents to a new directory.
+
+#### Installation can be done in two ways:
+- Building the Office365AddIns project from scratch. 
+- Installing (copying) the 'Publish' directory to where you want to run the add-in from.
+
+#### Building the ExcelRAddIn from scratch
+1. After building the add-ins, copy the bin\Debug or bin\Release contents to a new directory.
 2. Start Excel. Open the file ExcelRAddIn-AddIn64.xll. Excel will ask if this add-in should be enabled for this session. Press 'Enable'. The add-in is loaded, and a new menu appears on the right-hand side of the menu bar: R AddIn.
 3. Select the R AddIn menu. A ribbon bar is displayed with two buttons. Show/Hide Task Pane and Settings. 
 4. Select the Settings. An R Environment Settings dialog box is displayed. Fill in the details for the R Home and the R Path. R Home is where the base R installation lives. R Path is the directory where the R.dll lives. Press OK. Note you can also edit these settings manually in the configuration file ExcelRAddIn-AddIn64.xll.config.
 5. Finally, for convenience, it is useful to 'Trust' the AddIn location as this will ensure that Excel does not prompt you regarding a potential security concern each time the add-in is loaded. To do this, select the File menu, then Options. The Excel Options dialog box is displayed. Select Trust Center and press the button Trust Center Settings... . The Trust Center dialog is displayed. Use the Add New Location button to add the AddIns location to the list of trusted locations. Press OK when complete. Press OK to close the Excel Settings dialog.
-6. Open a new blank sheet. In cell B2 type: x <- rnorm(15). Next to this, in cell C2, type: =RScript.Evaluate(B2). The task pane will open. In the lower third, where the Messages are displayed there should be two informational messages indicating that R has been initialized correctly. In the Environment list view you should see the results of evaluating the R script. In the cell C2, the value 'x' should appear. The following screenshot shows the sample session:
+6. Open a new blank sheet. In cell B2 type: ```x <- rnorm(15)```. Next to this, in cell C2, type: ```=RScript.Evaluate(B2)```. The task pane will open. In the lower third, where the Messages are displayed there should be two informational messages indicating that R has been initialized correctly. In the Environment list view you should see the results of evaluating the R script. In the cell C2, the value ```x``` should appear. The following screenshot shows the sample session:
 
 <img src="Images/ExcelRAddIn.PNG" alt="ExcelRAddIn" width="100%" height="100%">
+
+#### Installing from the __Publish__ directory
+1. From https://github.com/Adam-Gladstone/Office365AddIns, select Code > Download ZIP.
+2. Extract the files in Office365AddIns-master.zip to a directory of your choice.
+3. (Optional) Right-click the Office365AddIns-master.zip, select Properties and check the 'Unblock' box.
+4. Open the zip file and copy the \Publish directory to where you want to run the add-in from. The \Publish directory contains the ExcelRAddIn and the RScriptAddIn binaries.
+5. Under \Publish in the ExcelRAddIn directory, locate the file ExcelRAddIn-AddIn64.xll.
+
+<img src="Images/PublishDirectory.PNG" alt="ExcelRAddIn" width="100%" height="100%">
+
+6. Double-click the file to open in Excel (assuming the .xll extension is associated with Excel).
+The first time you run this you will see a security warning. Press the button with 'Enable this add-in for this session only'. 
+7. The add-in is loaded, and a new menu appears on the right-hand side of the menu bar: R AddIn.
+8. Open a new blank workbook.
+9. Select the R AddIn menu. A ribbon bar is displayed with three buttons. Show/Hide Task Pane, Create Plot and Settings.
+Select the Settings. An R Environment Settings dialog box is displayed. Fill in the details for the R Home and the R Path. R Home is where the base R installation lives. R Path is the directory where the R.dll lives. In the list of packages, you may want to add (or remove) some default packages: e.g. tidyverse, ggplot2 etc. Once you have finished configuring the R environment, press OK.
+
+<img src="Images/RAddInSetup.PNG" alt="ExcelRAddIn" width="100%" height="100%">
+
+Note you can also edit these settings manually in the configuration file ExcelRAddIn-AddIn64.xll.config.
+
+10. Finally, for convenience, it is useful to 'trust' the AddIn location as this will ensure that Excel does not prompt you regarding a potential security concern each time the add-in is loaded. To do this, select the File menu, then Options. The Excel Options dialog box is displayed. Select Trust Center and press the button Trust Center Settings... . The Trust Center dialog is displayed. Select Trusted Locations. Use the Add New Location button to add the AddIns location to the list of trusted locations. Press OK when complete. Press OK to close the Excel Settings dialog.
+11. Open a new blank sheet if you haven't already done so.
+12. In cell B2 type: ```x <- rnorm(15)```
+13. Next to this, in cell C2, type: ```=RScript.Evaluate(B2)```
+The task pane will open. In the lower third, where the Messages are displayed there should be two informational messages indicating that R has been initialized correctly. In the Environment list view you should see the results of evaluating the R script. In the cell C2, the value 'x' should appear.
+
+#### Troubleshooting
+I have had an installation where it complained that 'rnorm' could not be found. The default 'stats' package functions fail to load. To remedy this:
+Type in cell B2: ```library("stats")```.
+In the cell next to this type: ```=RScript.Evaluate(B2, TRUE)```. The second argument is just to ignore the output (which in this case is a list of loaded packages). This should return OK. Then evaluate ```x <- rnorm(15)```.
+
+<img src="Images/TroubleshootLoadPackage.PNG" alt="ExcelRAddIn" width="100%" height="100%">
+
 
 #### RScriptAddIn
 1. Copy the bin\Debug or bin\Release contents to a new directory. Confirm that in the directory there is a file called RScriptAddIn.vsto. This is the deployment file. 
