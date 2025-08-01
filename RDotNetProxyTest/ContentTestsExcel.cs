@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using RDotNetProxy;
 using REngineWrapper;
 using System.Linq;
@@ -45,8 +46,8 @@ namespace RDotNetProxyTest
 
         public TestContentsExcel()
         {
-            string path = @"D:\R\R-4.4.1\bin\x64";
-            string home = @"D:\R\R-4.4.1";
+            string path = @"D:\R\R-4.5.1\bin\x64";
+            string home = @"D:\R\R-4.5.1";
             HostType host = HostType.Excel;
 
             m_engineWrapper = new EngineWrapper(path, home, host);
@@ -70,8 +71,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data[0, 0].ToString(), target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data[0, 0].ToString(), target);
         }
 
         [Test]
@@ -103,15 +104,15 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             object[] result_col0 = Utility.SliceColumn(result.Data, 0).ToArray();
             object[] result_col1 = Utility.SliceColumn(result.Data, 1).ToArray();
             object[] result_col2 = Utility.SliceColumn(result.Data, 2).ToArray();
 
-            Assert.AreEqual(result_col0, target_col0);
-            Assert.AreEqual(result_col1, target_col1);
-            Assert.AreEqual(result_col2, target_col2);
+            ClassicAssert.AreEqual(result_col0, target_col0);
+            ClassicAssert.AreEqual(result_col1, target_col1);
+            ClassicAssert.AreEqual(result_col2, target_col2);
         }
 
         [Test]
@@ -140,11 +141,11 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             object[] result_col0 = Utility.SliceColumn(result.Data, 0).ToArray();
 
-            Assert.AreEqual(result_col0, target);
+            ClassicAssert.AreEqual(result_col0, target);
         }
 
         [Test]
@@ -162,8 +163,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data[0, 0], target[0]);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data[0, 0], target[0]);
         }
 
         [Test]
@@ -178,8 +179,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data[0, 0], target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data[0, 0], target);
         }
 
         [Test]
@@ -194,9 +195,9 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
             object[] int_vector = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.AreEqual(int_vector, target);
+            ClassicAssert.AreEqual(int_vector, target);
         }
 
         [Test]
@@ -216,10 +217,10 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             object[] string_vector = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.AreEqual(string_vector, target);
+            ClassicAssert.AreEqual(string_vector, target);
         }
 
         [Test]
@@ -238,8 +239,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -258,8 +259,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -278,8 +279,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -304,18 +305,18 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             object[] result_row1 = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.AreEqual(result_row1, target_row1);
+            ClassicAssert.AreEqual(result_row1, target_row1);
 
             result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             object[] result_col3 = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.AreEqual(result_col3, target_col3);
+            ClassicAssert.AreEqual(result_col3, target_col3);
         }
 
         [Test]
@@ -333,8 +334,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -352,7 +353,7 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             int rows = target.GetLength(0);
             int cols = target.GetLength(1);
@@ -361,7 +362,7 @@ namespace RDotNetProxyTest
                 for (int c = 0; c < cols; c++)
                 {
                     string complex = m_engineWrapper.GetComplexNumber(target[r, c]);
-                    Assert.AreEqual(result.Data[r, c], complex);
+                    ClassicAssert.AreEqual(result.Data[r, c], complex);
                 }
             }
         }
@@ -385,8 +386,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -404,8 +405,8 @@ namespace RDotNetProxyTest
 
             // Assert
             object[] numeric_vector = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(numeric_vector, target_vector);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(numeric_vector, target_vector);
         }
 
         [Test]
@@ -424,8 +425,8 @@ namespace RDotNetProxyTest
 
             // Assert
             object[] numeric_vector = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(numeric_vector, target_vector);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(numeric_vector, target_vector);
         }
 
         [Test]
@@ -443,8 +444,8 @@ namespace RDotNetProxyTest
 
             // Assert
             object[] numeric_vector = Utility.SliceColumn(result.Data, 0).ToArray();
-            Assert.IsNotNull(result);
-            Assert.AreEqual(numeric_vector, target_vector);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(numeric_vector, target_vector);
         }
 
         [Test]
@@ -465,13 +466,13 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
+            ClassicAssert.IsNotNull(result);
 
             int rows = target_vector.Length;
             for (int r = 0; r < rows; r++)
             {
                 string complex = m_engineWrapper.GetComplexNumber(target_vector[r]);
-                Assert.AreEqual(result.Data[r, 0], complex);
+                ClassicAssert.AreEqual(result.Data[r, 0], complex);
             }
         }
 
@@ -496,8 +497,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data, target);
         }
 
         [Test]
@@ -513,8 +514,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Data[0, 0].ToString(), target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Data[0, 0].ToString(), target);
         }
     }
 }

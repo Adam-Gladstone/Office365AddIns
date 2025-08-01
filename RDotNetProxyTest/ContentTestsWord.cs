@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Legacy;
 using REngineWrapper;
 using System.Text;
 
@@ -10,8 +11,8 @@ namespace RDotNetProxyTest
 
         public TestContentsWord()
         {
-            string path = @"D:\R\R-4.4.1\bin\x64";
-            string home = @"D:\R\R-4.4.1";
+            string path = @"D:\R\R-4.5.1\bin\x64";
+            string home = @"D:\R\R-4.5.1";
             HostType host = HostType.Word;
 
             m_engineWrapper = new EngineWrapper(path, home, host);
@@ -45,8 +46,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script6);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -60,8 +61,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -81,8 +82,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script4);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -98,8 +99,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -117,8 +118,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -137,8 +138,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -157,8 +158,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script3);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -175,8 +176,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -193,8 +194,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -216,8 +217,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -233,8 +234,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -250,8 +251,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
 
         [Test]
@@ -268,8 +269,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content, target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content, target);
         }
     }
 }
