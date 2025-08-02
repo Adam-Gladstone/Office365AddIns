@@ -19,7 +19,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Notes\ggplot2 notes.txt = Notes\ggplot2 notes.txt
 		LICENSE.md = LICENSE.md
 		Notes\Parameter notes.txt = Notes\Parameter notes.txt
-		Notes\Project Notes.txt = Notes\Project Notes.txt
+		Notes\Project Notes.md = Notes\Project Notes.md
 		README.md = README.md
 	EndProjectSection
 EndProject
