@@ -40,3 +40,53 @@ Check in to a releaseable directory eg.
 
 
 
+Download the Office365AddIns-master.zip
+Right-click and select Properties. Check Unblock. Click OK.
+Find the Publish directory and copy the contents locally.
+In the Publish directory there are two sub-directories:
+	ExcelRAddIn
+	RScriptAddIn
+In the ExcelRAddIn, find the file: ExcelRAddIn-AddIn64.xll
+Double-click to start Excel and install the add-in.
+Ignore the Micorsoft Excel Security Notice: Select 'Enable this add-in for this session only'.
+Excel starts and the add-in is loaded.
+For ease-of-use in the future, go to File > Options. Select Trust Center, then Trusted Locations.
+Add the Publish directory to the Trusted User Locations. Check the box 'Subfolders of this location are also trusted'.
+Click OK, OK, OK to return to Excel.
+Open a new blank workbook.
+On the R AddIn menu, select Settings. Set the R Home and the R Path directories. Set up the packages to load (e.g. tidyverse, dplyr, forecast, ggplot2, ggthemes, and so on). Click OK.
+In cell B2 enter:
+	x <- rnorm(100)
+In cell D2 enter:
+	=RScript.Evaluate(b2)
+The first evaluation will initialise the R environment and load any default libraries. Showing the Task Pane displays the initialisation sequence and highlights any problems. The variable 'x' and a summary of its contents should appear in the environment window.
+TROUBLESHOOTING NOTE: recently the 'stats' library is not loaded when R is initialised. To workaround this, add the 'stats' library to the list of libraries loaded at startup; and/or evaluate the R script in cell B1:
+	library(stats)
+Use the following: =TRANSPOSE(RScript.Evaluate(B1))
+If you want to suppress the output of the library load, add TRUE as the second parameter.
+Re-evaluate the script in B2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
