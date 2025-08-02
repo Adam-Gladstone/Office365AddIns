@@ -34,7 +34,7 @@
     <PublishUrl>D:\Development\Projects\C#\Office\Office365 AddIns\Publish\RScriptAddIn\</PublishUrl>
     <InstallUrl />
     <TargetCulture>en</TargetCulture>
-    <ApplicationVersion>1.0.0.1</ApplicationVersion>
+    <ApplicationVersion>1.0.0.4</ApplicationVersion>
     <AutoIncrementApplicationRevision>true</AutoIncrementApplicationRevision>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateInterval>7</UpdateInterval>
@@ -247,7 +247,7 @@
     <ManifestKeyFile>RScriptAddIn_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>28268E1C0DA8A73BBB7500F12DA4AE6D01CAF361</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>446C0BA462ACAEBA8F83DDE5CFF475D4E8E20D2D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
