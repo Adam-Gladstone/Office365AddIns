@@ -26,13 +26,13 @@ namespace REnvironmentControlLibrary.ViewModel
             EnvironmentItem item = EnvironmentItems.ToList().Find(x => x.Name == name);
             if (item != null)
             {
-                item.Contents = contents;
+                // Remove previous item with the same name
+                EnvironmentItems.Remove(item);
             }
-            else
-            {
-                item = new EnvironmentItem(name, contents);
-                EnvironmentItems.Add(item);
-            }
+
+            item = new EnvironmentItem(name, contents);
+
+            EnvironmentItems.Add(item);
         }
 
         public long RemoveEnvironmentItems(string[] names)
