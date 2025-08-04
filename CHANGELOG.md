@@ -465,4 +465,12 @@ Datasets: AirPassengers, diamonds, mpg, mtcars
 ## 01/08/2025
 [x] Update and restructure the documents and project notes
 
+## 03/08/2025
+Issue: when the Office365AddIns-master.zip is downloaded to local directory from GitHub (https://github.com/Adam-Gladstone/Office365AddIns/tree/master#) the Publish directory artifacts have the time component of their timestamps changed. Hence, when the Publish directory is extracted locally, the RScriptAddIn directory contains artifacts which are 'different' from the hashed versions in the manifest. The vsto file used to install the add-in dll in Office365 Word then errors during setup identifying the dll as an incorrect version. To work around this, the Publish directory has been zipped up locally and checked in. When this directory is extracted from the Office365AddIns-master.zip to a separate Publish.zip file, and then extracted locally, installation of the RScriptAddIn works.
 
+## 04/08/2025
+[x] Fix issue with the task pane summary string not being updated when a script is (re)evaluated. e.g. if you do 
+x <- rnorm(10) x # display values; The same values appear in the task pane summary (but evaluating the variable outputs a different set of numbers).
+[x] Rebuild and publish binaries.
+[x] Update README.md
+[x] Update CHANGELOG.md

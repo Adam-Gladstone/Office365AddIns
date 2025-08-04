@@ -161,10 +161,18 @@ In the cell next to this type: ```=RScript.Evaluate(B2, TRUE)```. The second arg
 
 
 #### RScriptAddIn
-1. Copy the bin\Debug or bin\Release contents to a new directory. Confirm that in the directory there is a file called RScriptAddIn.vsto. This is the deployment file. 
-2. Double-click this file to install the add-in.
-3. Start Word, open a blank document. In the menu bar there is an Add-ins menu. Select this and in the ribbon bar you should see the R Tools menu. This consists of a button to Show and Hide the Task Pane, a button to execute R script, and a settings button. Press the Settings button. An R Environment Settings dialog box is displayed. Fill in the details for the R Home and the R Path. R Home is where the base R installation lives. R Path is the directory where the R.dll lives. Press OK.
-4. Open the document "RScriptAddIn/Tests/AddIn Test.docx". Select the line 'x <- seq(1:50)'. On the Add-ins menu, press the button Run Script. The task pane will open (if it is not already visible). In the lower third, where the Messages are displayed there should be two informational messages indicating that R has been initialized correctly. In the Environment list view you should see the results of evaluating the R script. Continue executing the script. The following screenshot shows the sample session:
+1. Download the Office365AddIns-master.zip
+2. Right-click and select Properties. Check Unblock. Click OK.
+3. Find the Publish directory. Copy the Publish.zip file locally. (This is a workaround for the incorrect timestamps on the original published artifacts).
+4. Extract the Publish.zip to your local machine. 
+	In the Publish directory there are two sub-directories:
+		- ExcelRAddIn
+		- RScriptAddIn
+5. In the RScriptAddIn directory, double-click the setup.exe. This will install the add-in into Microsoft Word.
+__NOTE__: If you have previously installed a version of the add-in, you will not be able to install a new version until the previous version has been uninstalled. To uninstall, go to the Control Panel > Add or Remove Programs. Uninstall the previous version and then re-run the setup.exe.
+(See the section "Prompt to manually uninstall appears when you publish and install a solution on the development computer" on  https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/tools-utilities/troubleshooting-office-solution-deployment).
+6. Once the add-in is installed, start Microsoft Word, open a blank document. In the menu bar there is an Add-ins menu. Select this and in the ribbon bar you should see the R Tools menu. This consists of a button to Show and Hide the Task Pane, a button to execute R script, and a settings button. Press the Settings button. An R Environment Settings dialog box is displayed. Fill in the details for the R Home and the R Path. R Home is where the base R installation lives. R Path is the directory where the R.dll lives. Under the Packages to Load, insert the Name 'stats' and press the '+' button. This will load the stats package by default. Press OK.
+7. Open the document "RScriptAddIn/Tests/AddIn Test.docx". Select the line 'x <- seq(1:50)'. On the Add-ins menu, press the button Run Script. The task pane will open (if it is not already visible). In the lower third, where the Messages are displayed there should be two informational messages indicating that R has been initialized correctly and a message indicating that the stats package has been loaded. In the Environment list view you should see the results of evaluating the R script. Continue executing the script. The following screenshot shows the sample session:
 
 <img src="Images/RScriptAddIn.PNG" alt="ExcelRAddIn" width="100%" height="100%">
 
