@@ -11,8 +11,8 @@ namespace RDotNetProxyTest
 
         public TestContentsWord()
         {
-            string path = @"D:\R\R-4.5.1\bin\x64";
-            string home = @"D:\R\R-4.5.1";
+            string path = @"D:\R\R-4.5.2\bin\x64";
+            string home = @"D:\R\R-4.5.2";
             HostType host = HostType.Word;
 
             m_engineWrapper = new EngineWrapper(path, home, host);
