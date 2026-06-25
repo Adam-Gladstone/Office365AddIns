@@ -1,4 +1,5 @@
 # Issues
+[] When you use RScript.Function(...) the help text is wrong/misleading
 
 ## AddIn
 

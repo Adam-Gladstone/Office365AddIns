@@ -1,0 +1,18 @@
+Python in Excel: How to do inferential statistics with Copilot - Stringfest Analytics
+https://stringfestanalytics.com/python-in-excel-how-to-do-inferential-statistics-with-copilot/
+
+Copilot for Excel: How to do exploratory data analysis with Python - Stringfest Analytics
+https://stringfestanalytics.com/copilot-for-excel-how-to-do-exploratory-data-analysis-with-python/
+
+Copilot in Excel: How to do K-means clustering with Python - Stringfest Analytics
+https://stringfestanalytics.com/copilot-in-excel-how-to-do-k-means-clustering-with-python/
+
+Python in Excel: How to do hierarchical clustering with Copilot - Stringfest Analytics
+https://stringfestanalytics.com/python-in-excel-how-to-do-hierarchical-clustering-with-copilot/
+
+Copilot in Excel: How to build exponential smoothing forecasts with Python - Stringfest Analytics
+https://stringfestanalytics.com/copilot-in-excel-how-to-build-exponential-smoothing-forecasts-with-python/
+
+
+
+
