@@ -522,8 +522,8 @@ namespace ExcelRAddIn
                         Description = "Evaluate the supplied function with the parameters.",
                         HelpTopic = "")]
         public static object[,] Function(
-            [ExcelArgument(Description = "The return value")] string returnValue,
-            [ExcelArgument(Description = "A unique name for this model")] string functionName,
+            [ExcelArgument(Description = "A name for the values that are returned")] string returnValue,
+            [ExcelArgument(Description = "The name of the function to evaluate")] string functionName,
             [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams
             )
         {
