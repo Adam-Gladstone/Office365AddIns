@@ -208,20 +208,19 @@ namespace ExcelRAddIn
                 }
                 else if (systemType == typeof(string))
                 {
-                    string s = (string)value;
-                    s.Trim();
+                    string item = ((string)value).Trim();
 
-                    if ((s.Substring(0, 2) == "c("))
+                    if (item.Substring(0, 2) == "c(")
                     {
-                        sb.Append($"{key} = {s}");
+                        sb.Append($"{key} = {item}");
                     }
-                    else if ((s.Substring(0, 1) == "^"))
+                    else if (item.Substring(0, 1) == "^")
                     {
-                        sb.Append($"{key} = {s.Substring(1, s.Length - 1)}");
+                        sb.Append($"{key} = {item.Substring(1, item.Length - 1)}");
                     }
                     else
                     {
-                        sb.Append($"{key} = \'{value}\'");
+                        sb.Append($"{key} = \'{item}\'");
                     }
                 }
                 else
@@ -233,6 +232,22 @@ namespace ExcelRAddIn
             }
 
             return sb.ToString();
+        }
+
+        // This is unreliable: calling
+        // exists("remiss ~ li") evaluates to FALSE, which is correct
+        // However, calling
+        // exists("sort") evaluates to TRUE but there is no object (listed) in the environment 
+        // e.g. ls(all.names = TRUE) returns [1] ".Random.seed", "df", "m1", "m1_summary", "remission"
+        // Presumably it is identifying the function "sort".
+
+        private static bool IsStringLiteral(string name)
+        {
+            // Check if the name exists in the environment
+            ScriptItem result = Script.EngineWrapper.Evaluate($"exists(\"{name}\")");
+
+            bool isStringLiteral = !(bool)result.Data[0, 0];
+            return isStringLiteral;
         }
     }
 }

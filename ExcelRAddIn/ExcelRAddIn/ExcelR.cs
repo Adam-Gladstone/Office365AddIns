@@ -6,6 +6,7 @@ using REnvironmentControlLibrary;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.Linq;
 using System.Numerics;
@@ -24,7 +25,7 @@ namespace ExcelRAddIn
                         HelpTopic = "")]
         public static object[,] Evaluate(
             [ExcelArgument(Description = "R script")] string script,
-            [ExcelArgument(Description = "Flag to indicate whether any output is suppressed")] bool suppressOutput = false
+            [ExcelArgument(Description = "Evaluation Options. Valid values: 'SuppressOutput (TRUE/FALSE)', 'DataFrame' ('df'), 'List' ('ls'), 'NamedVector' ('nv')")] object evalOptions = null
             )
         {
             object[,] obj;
@@ -33,10 +34,11 @@ namespace ExcelRAddIn
             {
                 Initialize();
 
-                ScriptItem result = EngineWrapper.Evaluate(script);
+                EvaluationOptions evaluationOptions = GetEvaluationOptions(evalOptions);
 
-                obj = ProcessResult(result, script, suppressOutput);
+                ScriptItem result = EngineWrapper.Evaluate(script, evaluationOptions);
 
+                obj = ProcessResult(result, script, evaluationOptions);
             }
             catch (Exception e)
             {
@@ -76,7 +78,7 @@ namespace ExcelRAddIn
             }
         }
 
-        public static object[,] ProcessResult(ScriptItem result, string script, bool suppressOutput)
+        public static object[,] ProcessResult(ScriptItem result, string script, EvaluationOptions options = EvaluationOptions.None)
         {
             object[,] obj = null;
 
@@ -115,7 +117,7 @@ namespace ExcelRAddIn
 
                     case EvaluationType.Value:
                         {
-                            if (suppressOutput)
+                            if (options == EvaluationOptions.SuppressOutput)
                             {
                                 string message = $"Ignoring output from {result.Name}";
                                 TaskPaneManager.AddMessage(MessageType.Information, message);
@@ -160,15 +162,18 @@ namespace ExcelRAddIn
             var packages = new List<string>(ConfigurationManager.AppSettings["packages"].Split(new char[] { ';' }));
             foreach (string package in packages)
             {
+                EvaluationOptions evaluationOptions = EvaluationOptions.SuppressOutput;
+
                 string script = $"library({package})";
-                ScriptItem result = EngineWrapper.Evaluate(script);
+                ScriptItem result = EngineWrapper.Evaluate(script, evaluationOptions);
+
                 if (result.EvaluationType == EvaluationType.Exception)
                 {
                     TaskPaneManager.AddMessage(MessageType.Error, result.Content);
                 }
                 else
                 {
-                    _ = ProcessResult(result, script, true);
+                    _ = ProcessResult(result, script, evaluationOptions);
                 }
             }
         }
@@ -464,13 +469,13 @@ namespace ExcelRAddIn
 
                 if(result.EvaluationType == EvaluationType.Exception)
                 {
-                    obj = ProcessResult(result, script, false);
+                    obj = ProcessResult(result, script);
                 }
                 else
                 {
                     result = EngineWrapper.Evaluate($"{parameterList}");
 
-                    object[,] parameters = ProcessResult(result, script, false);
+                    object[,] parameters = ProcessResult(result, script);
 
                     int rows = parameters.GetLength(0);
                     int columns = 1;
@@ -520,15 +525,16 @@ namespace ExcelRAddIn
                         HelpTopic = "")]
         public static object[,] Function(
             [ExcelArgument(Description = "The return value")] string returnValue,
-            [ExcelArgument(Description = "A unique name for this model")] string functionName,
-            [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams
+            [ExcelArgument(Description = "The name of the function to be executed")] string functionName,
+            [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams,
+            [ExcelArgument(Description = "Evaluation Options. Valid values: 'SuppressOutput (TRUE/FALSE)', 'DataFrame' ('df'), 'List' ('ls'), 'NamedVector' ('nv')")] object evalOptions = null
             )
         {
-            return EvaluateFunction(returnValue, functionName, objectParams);
+            return EvaluateFunction(returnValue, functionName, objectParams, evalOptions);
         }
 
         // Generic function to evaluate the named function using the parameters
-        private static object[,] EvaluateFunction(string returnValue, string functionName, object[,] objectParams)
+        private static object[,] EvaluateFunction(string returnValue, string functionName, object[,] objectParams, object evalOptions)
         {
             object[,] results;
 
@@ -536,15 +542,32 @@ namespace ExcelRAddIn
             {
                 Initialize();
 
-                Dictionary<string, object> parameters = Convert.GetParameters(objectParams);
+                EvaluationOptions evaluationOptions = GetEvaluationOptions(evalOptions);
 
-                string parameterList = Convert.ToParameterList(parameters);
+                string script = string.Empty;
 
-                string script = $"{Model.ModelName(returnValue)} = {FunctionName(functionName)}({parameterList})";
+                if(isSingleValue(objectParams))
+                {
+                    string param = objectParams[0, 0] as string;
 
-                ScriptItem result = EngineWrapper.Evaluate(script);
+                    script = string.IsNullOrEmpty(returnValue) ?
+                        $"{FunctionName(functionName)}({param})" :
+                        $"{Model.ModelName(returnValue)} = {FunctionName(functionName)}({param})";
+                }
+                else
+                {
+                    Dictionary<string, object> parameters = Convert.GetParameters(objectParams);
 
-                results = ProcessResult(result, script, false);
+                    string parameterList = Convert.ToParameterList(parameters);
+
+                    script = string.IsNullOrEmpty(returnValue) ?
+                        $"{FunctionName(functionName)}({parameterList})" :
+                        $"{Model.ModelName(returnValue)} = {FunctionName(functionName)}({parameterList})";
+                }
+
+                ScriptItem result = EngineWrapper.Evaluate(script, evaluationOptions);
+
+                results = ProcessResult(result, script, evaluationOptions);
             }
             catch (Exception e)
             {
@@ -561,6 +584,55 @@ namespace ExcelRAddIn
                 throw new ArgumentException("The function name is empty.");
             }
             return name;
+        }
+
+        private static bool isSingleValue(object[,] array)
+        {
+            return array != null &&
+                    array.GetLength(0) == 1 &&
+                    array.GetLength(1) == 1;
+        }
+
+        private static EvaluationOptions GetEvaluationOptions(object evalOptions)
+        {
+            Type systemType = evalOptions.GetType();
+
+            EvaluationOptions evaluationsOptions = EvaluationOptions.None;
+
+            // Handle the old boolean parameter: SuppressOutput T/F
+            if (systemType == typeof(bool))
+            {
+                evaluationsOptions = (bool)evalOptions ? EvaluationOptions.SuppressOutput : EvaluationOptions.None;
+            }
+            else if (systemType == typeof(string))
+            {
+                string option = evalOptions.ToString();
+
+                if(string.Equals(option, "SuppressOutput", StringComparison.OrdinalIgnoreCase))
+                {
+                    evaluationsOptions = EvaluationOptions.SuppressOutput;
+                }
+                else if(string.Equals(option, "DataFrame", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(option, "df", StringComparison.OrdinalIgnoreCase))
+                {
+                    evaluationsOptions = EvaluationOptions.DataFrame;
+                }
+                else if(string.Equals(option, "List", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(option, "ls", StringComparison.OrdinalIgnoreCase))
+                {
+                    evaluationsOptions = EvaluationOptions.List;
+                }
+                else if (string.Equals(option, "NamedVector", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(option, "nv", StringComparison.OrdinalIgnoreCase))
+                {
+                    evaluationsOptions = EvaluationOptions.NamedVector;
+                }
+                else
+                {
+                    throw new InvalidEnumArgumentException($"Unrecognised evaluation option ({option}).");
+                }
+            }
+            return evaluationsOptions;
         }
 
     }

@@ -26,7 +26,7 @@ namespace ExcelRAddIn
 
                 ScriptItem result = Script.EngineWrapper.Evaluate(script);
 
-                results = Script.ProcessResult(result, script, false);
+                results = Script.ProcessResult(result, script);
             }
             catch (Exception e)
             {
@@ -60,7 +60,7 @@ namespace ExcelRAddIn
 
                 ScriptItem result = Script.EngineWrapper.Evaluate(script);
 
-                results = Script.ProcessResult(result, script, false);
+                results = Script.ProcessResult(result, script);
             }
             catch (Exception e)
             {
