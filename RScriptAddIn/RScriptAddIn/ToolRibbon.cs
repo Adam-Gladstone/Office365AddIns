@@ -22,6 +22,8 @@ namespace RScriptAddIn
         // load any 'default' packages
         private void LoadDefaultPackages()
         {
+            EvaluationOptions evaluationOptions = EvaluationOptions.None;
+
             var packages = new List<string>(Settings.Default.packages.Split(new char[] { ';' }));
             foreach (string package in packages)
             {
@@ -29,7 +31,7 @@ namespace RScriptAddIn
                     continue;
 
                 string script = $"library({package})";
-                ScriptItem result = engineWrapper.Evaluate(script);
+                ScriptItem result = engineWrapper.Evaluate(script, evaluationOptions);
                 if (result.EvaluationType == EvaluationType.Exception)
                 {
                     AddMessage(MessageType.Error, result.Content);
@@ -45,7 +47,9 @@ namespace RScriptAddIn
         {
             try
             {
-                if(engineWrapper == null) 
+                EvaluationOptions evaluationOptions = EvaluationOptions.None;
+
+                if (engineWrapper == null) 
                 {
                     AddMessage(MessageType.Information, "Initializing the R environment ...");
 
@@ -79,7 +83,7 @@ namespace RScriptAddIn
                 Word.Selection sel = (Word.Selection)Globals.ThisAddIn.Application.Selection;
                 string script = sel.Text.Trim();
 
-                ScriptItem result = engineWrapper.Evaluate(script);
+                ScriptItem result = engineWrapper.Evaluate(script, evaluationOptions);
                 if(result != null)
                 {
                     switch (result.EvaluationType)

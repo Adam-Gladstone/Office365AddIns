@@ -25,7 +25,7 @@ namespace ExcelRAddIn
 
                 ScriptItem result = Script.EngineWrapper.Evaluate(script);
 
-                results = Script.ProcessResult(result, script, false);
+                results = Script.ProcessResult(result, script);
             }
             catch (Exception e)
             {
@@ -68,11 +68,11 @@ namespace ExcelRAddIn
                     }
                 }
 
-                string script = asDataFrame ? $"as.data.frame({components})" : $"({components})";
+                EvaluationOptions evaluationOptions = asDataFrame ? EvaluationOptions.DataFrame : EvaluationOptions.None;
 
-                ScriptItem res = Script.EngineWrapper.Evaluate(script);
+                ScriptItem res = Script.EngineWrapper.Evaluate(components, evaluationOptions);
 
-                results = Script.ProcessResult(res, script, false);
+                results = Script.ProcessResult(res, components, evaluationOptions);
             }
             catch (Exception e)
             {
@@ -100,11 +100,13 @@ namespace ExcelRAddIn
 
                 string _modelName = ModelName(modelName);
 
-                string script = $"as.data.frame(accuracy({_modelName}))";
+                EvaluationOptions evaluationOptions = EvaluationOptions.DataFrame;
 
-                ScriptItem result = Script.EngineWrapper.Evaluate(script);
+                string script = $"accuracy({_modelName})";
 
-                results = Script.ProcessResult(result, script, false);
+                ScriptItem result = Script.EngineWrapper.Evaluate(script, evaluationOptions);
+
+                results = Script.ProcessResult(result, script);
             }
             catch (Exception e)
             {

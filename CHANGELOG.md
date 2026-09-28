@@ -5,6 +5,7 @@ Excel-DNA: https://excel-dna.net/docs/introduction
 R.NET: https://github.com/rdotnet/rdotnet and https://rdotnet.github.io/rdotnet/
 
 # Issues
+[] When you use RScript.Function(...) the help text is wrong/misleading
 
 ## AddIn
 [] Date conversion utilities for R <-> Excel? (Use case: Time Series Forecasting In R: From Moving Averages To Seasonal ARIMA | R-bloggers)

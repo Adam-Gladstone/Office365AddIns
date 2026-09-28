@@ -257,5 +257,23 @@ namespace RDotNetProxyTest
             ClassicAssert.IsNotNull(result);
             ClassicAssert.AreEqual(result.Content, target);
         }
+
+        [Test]
+        public void TestTimeSeriesSummary()
+        {
+            // Arrange
+            string script1 = "data = runif(144, 0, 256)";
+            string script2 = "data_ts = ts(data = data, start = c(1949, 1), end = c(1960, 12), frequency = 12)";
+
+            string target = "Time-Series [1:144] from 1949 to 1961:";
+
+            // Act
+            _ = m_engineWrapper.Evaluate(script1);
+            ScriptItem result = m_engineWrapper.Evaluate(script2);
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(result.Content.Substring(0, 38), target);
+        }
     }
 }

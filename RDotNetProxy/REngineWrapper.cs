@@ -31,6 +31,15 @@ namespace REngineWrapper
         Remove
     }
 
+    public enum EvaluationOptions
+    {
+        None,               // Nothing special: return what r.net returns
+        SuppressOutput,     // Return a string indicating success or failure
+        DataFrame,          // Apply as.data.frame to the script
+        List,               // Apply as.list to the script
+        NamedVector,        // Vector with the first column as names
+    }
+
     public class TypeInfo
     {
         public TypeInfo(string type, string rclass)
@@ -41,6 +50,8 @@ namespace REngineWrapper
 
         public string Type { get { return _type; } }
         public string RClass { get { return _rclass; } }
+
+        public bool IsTimeSeries() {  return (_rclass == "ts"); }
 
         public string GetSummaryType()
         {
@@ -56,7 +67,7 @@ namespace REngineWrapper
                     break;
 
                 case "double":
-                    summary = (_rclass == "Date") ? "Date" : "num";
+                    summary = (_rclass == "Date") ? "Date" : (_rclass == "ts" ? "Time-Series" : "num");
                     break;
 
                 case "logical":
@@ -119,7 +130,7 @@ namespace REngineWrapper
             Engine?.Dispose();
         }
 
-        public ScriptItem Evaluate(string script)
+        public ScriptItem Evaluate(string script, EvaluationOptions evaluationOptions = EvaluationOptions.None)
         {
             Tuple<bool, string, string> operationType = ExtractName(script);
             bool hasAssignment = operationType.Item1;
@@ -128,7 +139,22 @@ namespace REngineWrapper
 
             try
             {
-                SymbolicExpression expression = Engine.Evaluate(script);
+                SymbolicExpression expression = null;
+
+                switch (evaluationOptions)
+                {
+                    case EvaluationOptions.None:
+                    case EvaluationOptions.SuppressOutput:
+                    case EvaluationOptions.NamedVector:
+                        expression = Engine.Evaluate(script);
+                        break;
+                    case EvaluationOptions.DataFrame:
+                        expression = Engine.Evaluate($"as.data.frame({script})");
+                        break;
+                    case EvaluationOptions.List:
+                        expression = Engine.Evaluate($"as.list({script})");
+                        break;
+                }
 
                 if (expression == null || expression.IsInvalid)
                 {
@@ -160,7 +186,7 @@ namespace REngineWrapper
                     switch (HostType)
                     {
                         case HostType.Excel:
-                            result = GetContentsAsObject(expression, name);
+                            result = GetContentsAsObject(expression, name, evaluationOptions);
                             break;
                         case HostType.Word:
                             result = GetContentsAsString(expression, name, "");
@@ -432,7 +458,19 @@ namespace REngineWrapper
 
             int rows = v.Count();
 
-            result.Content = rows > 1 ? $"{ti.GetSummaryType()} [{1}:{rows}] " : "";
+            if (ti.IsTimeSeries())
+            {
+                Tuple<double, double, double> attributes = GetTimeSeriesAttributes(name);
+
+                double start = Math.Round(attributes.Item1);
+                double end = Math.Round(attributes.Item2);
+
+                result.Content = rows > 1 ? $"{ti.GetSummaryType()} [{1}:{rows}] from {start} to {end}: " : "";
+            }
+            else
+            {
+                result.Content = rows > 1 ? $"{ti.GetSummaryType()} [{1}:{rows}] " : "";
+            }
 
             for (int i = 0; i < Math.Min(10, rows); i++)
             {
@@ -517,7 +555,7 @@ namespace REngineWrapper
         //
         // Retrieve the contents from the evaluated script
         // 
-        private ScriptItem GetContentsAsObject(SymbolicExpression expression, string name)
+        private ScriptItem GetContentsAsObject(SymbolicExpression expression, string name, EvaluationOptions evaluationOptions)
         {
             try
             {
@@ -535,7 +573,7 @@ namespace REngineWrapper
                 }
                 else if (expression.IsList())
                 {
-                    result = GetContentsAsObject(expression.AsList(), name);
+                    result = GetContentsAsObject(expression.AsList(), name, ti);
                 }
                 else if (expression.IsMatrix())
                 {
@@ -569,28 +607,27 @@ namespace REngineWrapper
                 {
                     if (ti.Type == "double")
                     {
-                        result = GetVectorContentsAsObject<DynamicVector, object>(expression.AsVector(), name, ti);
+                        result = GetVectorContentsAsObject<DynamicVector, object>(expression.AsVector(), name, ti, evaluationOptions);
                     }
                     else if (ti.Type == "integer")
                     {
-                        result = GetVectorContentsAsObject<IntegerVector, int>(expression.AsInteger(), name, ti);
+                        result = GetVectorContentsAsObject<IntegerVector, int>(expression.AsInteger(), name, ti, evaluationOptions);
                     }
                     else if (ti.Type == "logical")
                     {
-                        result = GetVectorContentsAsObject<LogicalVector, bool>(expression.AsLogical(), name, ti);
+                        result = GetVectorContentsAsObject<LogicalVector, bool>(expression.AsLogical(), name, ti, evaluationOptions);
                     }
                     else if (ti.Type == "complex")
                     {
-                        result = GetVectorContentsAsObject<ComplexVector, Complex>(expression.AsComplex(), name, ti);
+                        result = GetVectorContentsAsObject<ComplexVector, Complex>(expression.AsComplex(), name, ti, evaluationOptions);
                     }
                     else if (ti.Type == "character" || ti.Type == "language" || ti.Type == "closure")
                     {
-                        result = GetVectorContentsAsObject<CharacterVector, string>(expression.AsCharacter(), name, ti);
+                        result = GetVectorContentsAsObject<CharacterVector, string>(expression.AsCharacter(), name, ti, evaluationOptions);
                     }
                     else if (ti.Type == "symbol")
                     {
-                        result = GetVectorContentsAsObject<CharacterVector, string>(expression.AsCharacter(), name, ti);
-                        //result = GetContentsAsObject(expression.AsSymbol(), name);
+                        result = GetVectorContentsAsObject<CharacterVector, string>(expression.AsCharacter(), name, ti, evaluationOptions);
                     }
                     else
                     {
@@ -610,7 +647,7 @@ namespace REngineWrapper
                 {
                     result = GetContentsAsObject(expression.AsFunction(), name);
                 }
-                else if (expression.IsS4())
+                else if (expression.IsS4() || expression.Type == RDotNet.Internals.SymbolicExpressionType.S4)
                 {
                     result = GetContentsAsObject(expression.AsS4(), name);
                 }
@@ -692,24 +729,48 @@ namespace REngineWrapper
             return result;
         }
 
-        private ScriptItem GetVectorContentsAsObject<VectorType, UnderlyingType>(VectorType v, string name, TypeInfo ti)
+        private ScriptItem GetVectorContentsAsObject<VectorType, UnderlyingType>(VectorType v, string name, TypeInfo ti, EvaluationOptions evaluationOptions)
             where VectorType : Vector<UnderlyingType>
         {
             ScriptItem result = new ScriptItem() { EvaluationType = EvaluationType.Value, Name = name };
 
             int rows = v.Count();
 
-            result.Data = new object[rows, 1];
-
-            for (int r = 0; r < rows; r++)
+            if(evaluationOptions == EvaluationOptions.NamedVector)
             {
-                result.Data[r, 0] = GetObject(v[r], ti);
+                string[] names = null;
+                SymbolicExpression exp = Engine.Evaluate($"names({name})");
+                if (exp != null && exp.Type != RDotNet.Internals.SymbolicExpressionType.Null)
+                {
+                    names = exp.AsCharacter().ToArray();
+                }
+
+                int columns = (names != null && names.Length > 0) ? 2 : 1;
+
+                result.Data = new object[rows, columns];
+
+                for (int r = 0; r < rows; r++)
+                {
+                    result.Data[r, 0] = (columns == 1) ? GetObject(v[r], ti) : names[r];
+
+                    if (columns > 1)
+                        result.Data[r, 1] = GetObject(v[r], ti);
+                }
+            }
+            else
+            {
+                result.Data = new object[rows, 1];
+
+                for (int r = 0; r < rows; r++)
+                {
+                    result.Data[r, 0] = GetObject(v[r], ti);
+                }
             }
 
             return result;
         }
 
-        private ScriptItem GetContentsAsObject(GenericVector v, string name)
+        private ScriptItem GetContentsAsObject(GenericVector v, string name, TypeInfo ti)
         {
             ScriptItem result = new ScriptItem() { EvaluationType = EvaluationType.Value, Name = name };
 
@@ -780,8 +841,25 @@ namespace REngineWrapper
             SymbolicExpression expression = Engine.Evaluate($"deparse({name})");
             if (expression != null && expression.Type != RDotNet.Internals.SymbolicExpressionType.Null)
             {
-                ScriptItem item = GetContentsAsObject(expression, name);
-                result.Data[0, 0] = item != null ? item.Data[0, 0] : "<empty>";
+                ScriptItem item = GetContentsAsObject(expression, name, EvaluationOptions.None);
+
+                // NOTE: When parsing fm$call (from a linear model) we get back a vector with two columns (because we ask for names);
+                // However, the first item is empty/unnamed
+                //		[0, 0]	""	object {string}
+                //      [0, 1]  "lm(formula = y ~ x, data = df)"    object { string}
+                // On the other hand, when parsing fm$terms, we get back a single non-empty element
+                // 		[0, 0]	"y ~ x"	object {string}
+
+                if(item != null && item.Data != null)
+                {
+                    string expr = item.Data[0, 0].ToString();
+
+                    result.Data[0, 0] = string.IsNullOrEmpty(expr) ? item.Data[0, 1] : expr;
+                }
+                else
+                {
+                    result.Data[0, 0] = "<empty>";
+                }
             }
 
             return result;
@@ -800,7 +878,7 @@ namespace REngineWrapper
             SymbolicExpression expression = Engine.Evaluate($"deparse({name})");
             if (expression != null && expression.Type != RDotNet.Internals.SymbolicExpressionType.Null)
             {
-                ScriptItem item = GetContentsAsObject(expression, name);
+                ScriptItem item = GetContentsAsObject(expression, name, EvaluationOptions.None);
                 result.Data[0, 0] = item != null ? (string.IsNullOrEmpty(item.Data[0, 0].ToString()) ? "<missing>": item.Data[0, 0]) : "<empty>";
             }
 
@@ -815,7 +893,7 @@ namespace REngineWrapper
             SymbolicExpression expression = Engine.Evaluate($"deparse({name})");
             if (expression != null && expression.Type != RDotNet.Internals.SymbolicExpressionType.Null)
             {
-                ScriptItem item = GetContentsAsObject(expression, name);
+                ScriptItem item = GetContentsAsObject(expression, name, EvaluationOptions.None);
                 if (item.Data != null)
                 {
                     int rows = item.Data.GetLength(0);
@@ -841,23 +919,28 @@ namespace REngineWrapper
         {
             ScriptItem result = new ScriptItem() { EvaluationType = EvaluationType.Value, Name = name };
 
-            string[] names = s4.SlotNames;
-
-            if (names != null)
+            // NOTE: The cast to .AsS4() is currently failing even when the object type RObjectType = S4
+            if(s4 != null)
             {
-                int rows = names.Length;
-                result.Data = new object[rows, 1];
+                string[] names = s4.SlotNames;
 
-                for (int r = 0; r < rows; r++)
+                if (names != null)
                 {
-                    result.Data[r, 0] = names[r];
+                    int rows = names.Length;
+                    result.Data = new object[rows, 1];
+
+                    for (int r = 0; r < rows; r++)
+                    {
+                        result.Data[r, 0] = names[r];
+                    }
+                }
+                else
+                {
+                    result.Data = new object[1, 1];
+                    result.Data[0, 0] = "No slot names in S4 class.";
                 }
             }
-            else
-            {
-                result.Data = new object[1, 1];
-                result.Data[0, 0] = "No slot names in S4 class.";
-            }
+
             return result;
         }
 
@@ -1333,18 +1416,21 @@ namespace REngineWrapper
             return number;
         }
 
+        // NOTE: This should really return an array of types
         private string GetTypeOf(string name)
         {
             string type = string.IsNullOrEmpty(name) ? "" : Engine.Evaluate($"typeof({name})").AsCharacter().First();
             return type;
         }
 
+        // NOTE: This should really return an array of classes (from which the object inherits):
+        // e.g. class(summary( summary(m1)$deviance.resid) ) "get the deviance residuals and summarise them"
+        // returns [1] "summaryDefault" "table".
         private string GetClassOf(string name)
         {
             string cls = string.IsNullOrEmpty(name) ? "" : Engine.Evaluate($"class({name})").AsCharacter().First();
             return cls;
         }
-
 
         private Tuple<bool, string, string> ExtractName(string script)
         {
@@ -1681,6 +1767,13 @@ namespace REngineWrapper
             ScriptItem item = GetSummary(df, name);
 
             return item;
+        }
+
+        private Tuple<double, double, double> GetTimeSeriesAttributes(string name)
+        {
+            double[] attributes = Engine.Evaluate($"tsp({name})").AsNumeric().ToArray();
+
+            return new Tuple<double, double, double>(attributes[0], attributes[1], attributes[2]);
         }
 
     }

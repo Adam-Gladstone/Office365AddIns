@@ -1,0 +1,72 @@
+Installation
+
+ExcelRAddIn Installation
+-------------------------
+Download the Office365AddIns-master.zip
+Right-click and select Properties. Check Unblock. Click OK.
+Find the Publish directory and copy the contents locally.
+In the Publish directory there are two sub-directories:
+	ExcelRAddIn
+	RScriptAddIn
+In the ExcelRAddIn directory, find the file: ExcelRAddIn-AddIn64.xll
+Double-click to start Excel and install the add-in.
+Ignore the Micorsoft Excel Security Notice: Select 'Enable this add-in for this session only'.
+Excel starts and the add-in is loaded.
+For ease-of-use in the future, go to File > Options. Select Trust Center, then Trusted Locations.
+Add the Publish directory to the Trusted User Locations. Check the box 'Subfolders of this location are also trusted'.
+Click OK, OK, OK to return to Excel.
+Open a new blank workbook.
+On the R AddIn menu, select Settings. Set the R Home and the R Path directories. Set up the packages to load (e.g. tidyverse, dplyr, forecast, ggplot2, ggthemes, and so on). Click OK.
+In cell B2 enter:
+	x <- rnorm(100)
+In cell D2 enter:
+	=RScript.Evaluate(b2)
+The first evaluation will initialise the R environment and load any default libraries. Showing the Task Pane displays the initialisation sequence and highlights any problems. The variable 'x' and a summary of its contents should appear in the environment window.
+TROUBLESHOOTING NOTE: recently the 'stats' library is not loaded when R is initialised. To workaround this, add the 'stats' library to the list of libraries loaded at startup; and/or evaluate the R script in cell B1:
+	library(stats)
+Use the following: =TRANSPOSE(RScript.Evaluate(B1))
+If you want to suppress the output of the library load, add TRUE as the second parameter.
+Re-evaluate the script in B2
+
+RScriptAddIn Installation
+--------------------------
+Download the Office365AddIns-master.zip
+Right-click and select Properties. Check Unblock. Click OK.
+Find the Publish directory. Copy the Publish.zip file locally. (This is a workaround for the incorrect timestamps on the original published artifacts).
+Extract the Publish.zip to your local machine. 
+In the Publish directory there are two sub-directories:
+	ExcelRAddIn
+	RScriptAddIn
+In the RScriptAddIn directory, double-click the setup.exe. This will install the add-in into Microsoft Word.
+If you have previously installed a version of the add-in, you will not be able to install a new version until the previous version has been uninstalled. To uninstall, go to the Control Panel > Add or Remove Programs. Uninstall the previous version and then re-run the setup.exe.
+(see the section "Prompt to manually uninstall appears when you publish and install a solution on the development computer" on  https://learn.microsoft.com/en-us/troubleshoot/developer/visualstudio/tools-utilities/troubleshooting-office-solution-deployment)
+
+Start Microsoft Word. 
+To configure the RScriptAddIn do the following:
+	Select the menu Add-ins > Settings.
+	Add the R Home and R Path directories to your R installation.
+	Under the Packages to Load, insert the Name 'stats' and press the '+' button. This will load the stats package by default.
+	Press OK.
+As a brief test, try the following:
+In a new Word document, copy the following script:
+
+```
+# Generate a sequence of 50 integers.
+x <- seq(1:50)
+
+# Generate 50 normally distributed random numbers.
+y <- rnorm(50)
+
+# Fit a linear model to the data.
+fm = lm(y ~ x)
+
+# Output the names of the coefficients.
+names(fm$coefficients)
+
+# Output the coefficient values.
+fm$'coefficients'
+
+```
+
+Select the first script line. On the Add-ins menu, select Run Script. The add in will perform some initialisation, then it will add the variable 'x' to the environment. It can be seen in the task pane. Continue with the rest of the script.
+
