@@ -529,7 +529,8 @@ namespace ExcelRAddIn
         public static object[,] Function(
             [ExcelArgument(Description = "The return value")] string returnValue,
             [ExcelArgument(Description = "A unique name for this model")] string functionName,
-            [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams
+            [ExcelArgument(Description = "A 2D array containing parameter names and corresponding values")] object[,] objectParams,
+            [ExcelArgument(Description = "Evaluation Options. Valid values: 'SuppressOutput (TRUE/FALSE)', 'DataFrame' ('df'), 'List' ('ls'), 'NamedVector' ('nv')")] object evalOptions = null
             )
         {
             return EvaluateFunction(returnValue, functionName, objectParams, evalOptions);
@@ -548,7 +549,7 @@ namespace ExcelRAddIn
 
                 string script = string.Empty;
 
-                if(isSingleValue(objectParams))
+                if(IsSingleValue(objectParams))
                 {
                     string param = objectParams[0, 0] as string;
 
@@ -588,7 +589,7 @@ namespace ExcelRAddIn
             return name;
         }
 
-        private static bool isSingleValue(object[,] array)
+        private static bool IsSingleValue(object[,] array)
         {
             return array != null &&
                     array.GetLength(0) == 1 &&

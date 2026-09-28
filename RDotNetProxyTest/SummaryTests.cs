@@ -272,8 +272,8 @@ namespace RDotNetProxyTest
             ScriptItem result = m_engineWrapper.Evaluate(script2);
 
             // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(result.Content.Substring(0, 38), target);
+            ClassicAssert.IsNotNull(result);
+            ClassicAssert.AreEqual(result.Content.Substring(0, 38), target);
         }
     }
 }
