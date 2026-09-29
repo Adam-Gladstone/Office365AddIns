@@ -269,7 +269,7 @@ The Forecast.xlsx spreadsheet provides examples of these based on the underlying
 ## Roadmap
 
 Future directions:
-- [ ] Add Changelog
+- [x] Add Changelog
 
 See the [open issues](https://github.com/Adam-Gladstone/Office365AddIns/issues) for a full list of proposed features (and known issues).
 
