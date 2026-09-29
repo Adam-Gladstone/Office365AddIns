@@ -469,7 +469,33 @@ x <- rnorm(10) x # display values; The same values appear in the task pane summa
 - [x] Update README.md
 - [x] Update CHANGELOG.md
 
-## 21/09/2026 - 28/09/2026
+## 21/09/2026
+- [x] add support for time-series in the summary string in the environment panel
+- [x] update the path to the R distribution for the test framework
+- [x] add test TestTimeSeriesSummary to the SummaryTests
+
+## 23/09/2026
+- [x] update the RScript.Evaluate function to accept EvalOptions instead of a T/F SuppressOutput parameter. EvalOptions can be one of 'SuppressOutput', 'DataFrame' (or 'df' shorthand), 'List' (case insensitive)
+- [x] update the RScript.Function to allow the return value to be optional. Add support for EvalOptions as above.
+
+## 24/09/2026
+- [x] Update the vector output to include the 'names' in the first column if they are present; i.e. this is a 'named' vector.
+- [x] Check test results
+- [] Add support for determining type (literal or variable) in a parameter block ---> how to do this reliably as 'exists' doesn't really work (I am not sure this is a problem).
+
+## 25/09/2026
+- [x] Add support for optionally returning the names in a named vector. Use the evaluation options parameter: 'NamedVector' or 'nv'; if set, return two columns with the first corresponding to the names and the second to the data.
+- [x] Update the version number: 2.0.0.0 and the AssemblyCopyright to 2026
+
+## 28/09/2026
+- [x] Add facility to pass in a single parameter (rather than a parameter block of key = value: e.g. head(x, ...) )
+- [x] Rebuild and test
+- [x] Check in changes
+- [x] Merge development -> master
+- [x] Further testing with Time series and GLM - more examples
+
+
+## Summary: 21/09/2026 - 28/09/2026
 - Added support for time-series in the summary string in the environment panel
 - Updated the path to the R distribution for the test framework
 - Added a test TestTimeSeriesSummary to the SummaryTests
