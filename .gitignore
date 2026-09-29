@@ -362,18 +362,14 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 .Rproj.user
-/Project Notes.txt
-/ExcelRAddIn/ExcelRAddIn/Docs/Menu Driven Data Science.txt
-/ggplot2 notes.txt
-/Parameter notes.txt
-/Office365 AddIns Project Notes.txt
-/Roadmap.txt
 
-/Notes/
-/Notes/ggplot2 notes.txt
-/Notes/Parameter notes.txt
-/Notes/Project Notes.txt
-/Notes/Project Notes.md
-/RScriptAddIn/RScriptAddIn/RScriptAddIn_TemporaryKey.pfx
-/Notes/Installation.txt
-/Notes/Menu Driven Data Science.txt
+RScriptAddIn/RScriptAddIn/RScriptAddIn_TemporaryKey.pfx
+
+# Ignore all scratchpad notes
+Notes/
+Notes/ggplot2 notes.txt
+Notes/Parameter notes.txt
+Notes/Project Notes.txt
+Notes/Project Notes.md
+Notes/Installation.txt
+Notes/Menu Driven Data Science.txt
