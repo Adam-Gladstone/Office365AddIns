@@ -1,5 +1,6 @@
 # Office365 AddIns - Project Notes
 
+
 ## General
 NOTE: The results handling still seems poor.
 When you get back a model, you get back a large list (lm produces 10/11, one of the ARIMA models produces 19, glm produces 30 items etc): how can you present the data better? perhaps a more useful summary? The RScriptAddIn for Word simply unrolls all the list items. This is not really feasible in the 'tabular' world of Excel.
